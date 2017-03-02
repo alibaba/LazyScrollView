@@ -2,6 +2,8 @@
 
 [中文说明](http://pingguohe.net/2016/01/31/lazyscroll.html)
 
+[中文Demo说明](http://pingguohe.net/2017/03/02/lazyScrollView-demo.html)
+
 LazyScrollView is an iOS ScrollView , to resolve the problem of reusability of views. 
 
 We reply an another way to control reuse in a ScrollView, it depends on give a special reuse identifier to every view controlled in LazyScrollView.
