@@ -14,6 +14,16 @@ Comparing to UICollectionView , LazyScrollView can create views without Grid lay
 
 The system requirement is iOS 5+
 
+# Installation
+
+1.  LazyScroll is available as `LazyScroll` in cocoapods 
+
+```
+   pod 'LazyScroll'
+```
+
+2. Manually add the files in `LazyScrollView` folder into your project
+
 # Usage
 
     #import "TMMuiLazyScrollView.h"
