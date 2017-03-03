@@ -16,13 +16,13 @@ The system requirement is iOS 5+
 
 # Installation
 
-1.  LazyScroll is available as `LazyScroll` in cocoapods 
+LazyScroll is available as `LazyScroll` in cocoapods 
 
 ```
    pod 'LazyScroll'
 ```
 
-2. Manually add the files in `LazyScrollView` folder into your project
+If you don't want to use cocoapods, you can also manually add the files in `LazyScrollView` folder into your Xcode project
 
 # Usage
 
