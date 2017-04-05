@@ -98,9 +98,6 @@
 @property (nonatomic, strong) NSMutableDictionary *enterDict;
 // Store last time visible muiID
 @property (nonatomic, strong) NSMutableSet *lastVisiblemuiID;
-// Store in Screen Visible item
-// The difference between 'visibleItems' and 'inScreenVisibleItems' is there is a buffer area in LazyScrollView(RenderBufferWindow), so 'visibleItems' contains view in 'RenderBufferWindow'
-@property (nonatomic, strong) NSMutableSet *inScreenVisibleItems;
 
 @end
 
@@ -114,13 +111,7 @@
     }
     return _enterDict;
 }
-- (NSMutableSet *)inScreenVisibleItems
-{
-    if (nil == _inScreenVisibleItems) {
-        _inScreenVisibleItems = [[NSMutableSet alloc]init];
-    }
-    return _inScreenVisibleItems;
-}
+
 - (NSMutableSet *)shouldReloadItems
 {
     if (nil == _shouldReloadItems) {
@@ -545,15 +536,6 @@
                 }
             }
             [self.shouldReloadItems removeObject:muiID];
-        }
-    }
-    [self.inScreenVisibleItems removeAllObjects];
-    for (UIView *view in self.visibleItems) {
-        if ([view isKindOfClass:[UIView class]] && view.superview) {
-            CGRect absRect = [view.superview convertRect:view.frame toView:self];
-            if ((absRect.origin.y + absRect.size.height >= CGRectGetMinY(self.bounds)) && (absRect.origin.y <= CGRectGetMaxY(self.bounds))) {
-                [self.inScreenVisibleItems addObject:view];
-            }
         }
     }
 }
