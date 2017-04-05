@@ -59,7 +59,7 @@
 @interface TMMuiLazyScrollView()<UIScrollViewDelegate>
 
 // Store Visible Views
-@property (nonatomic, strong, readonly) NSMutableSet *visibleItems;
+@property (nonatomic, strong, readwrite) NSMutableSet *visibleItems;
 
 // Store reuseable cells by reuseIdentifier. The key is reuseIdentifier of views , value is an array that contains reuseable cells.
 @property (nonatomic,strong)NSMutableDictionary *recycledIdentifierItemsDic;
