@@ -86,6 +86,9 @@
 
 @property (nonatomic, weak, nullable)   id <TMMuiLazyScrollViewDataSource> dataSource;
 
+// Get Visible Views
+@property (nonatomic, strong, readonly,nonnull) NSMutableSet *visibleItems;
+
 // reloads everything from scratch and redisplays visible views.
 - (void)reloadData;
 // Get reuseable view by reuseIdentifier. If cannot find reuseable view by reuseIdentifier, here will return nil.
