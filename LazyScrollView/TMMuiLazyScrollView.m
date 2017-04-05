@@ -495,7 +495,7 @@
             //Then recycle the view.
             NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
             [recycledIdentifierSet addObject:view];
-            view.hidden = YES;
+            [view removeFromSuperview];
             [recycledItems addObject:view];
         }
         else if (isReload && view.muiID) {
@@ -529,7 +529,6 @@
                 if (viewToShow)
                 {
                     viewToShow.muiID = muiID;
-                    viewToShow.hidden = NO;
                     if (![self.visibleItems containsObject:viewToShow]) {
                         [self.visibleItems addObject:viewToShow];
                     }
@@ -624,7 +623,7 @@
     for (UIView *view in visibles) {
         NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
         [recycledIdentifierSet addObject:view];
-        view.hidden = YES;
+        [view removeFromSuperview];
     }
     [_visibleItems removeAllObjects];
     [_recycledIdentifierItemsDic removeAllObjects];
