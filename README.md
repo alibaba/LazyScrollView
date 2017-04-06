@@ -4,7 +4,7 @@
 
 [中文Demo说明](http://pingguohe.net/2017/03/02/lazyScrollView-demo.html)
 
-依赖LazyScrollView, 我们创建了一个模块化页面UI解决方案，详情可见 [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios).
+> 依赖LazyScrollView, 我们创建了一个模块化页面UI解决方案，详情可见 [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios).
 
 LazyScrollView is an iOS ScrollView , to resolve the problem of reusability of views. 
 
@@ -16,7 +16,7 @@ Comparing to UICollectionView , LazyScrollView can create views without Grid lay
 
 The system requirement is iOS 5+
 
-We create a modular UI solution for building native page dynamically based on `LazyScrollView`, you can see more info from this repo : [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios)
+> We create a modular UI solution for building native page dynamically based on `LazyScrollView`, you can see more info from this repo : [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios)
 
 # Installation
 
