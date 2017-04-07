@@ -489,14 +489,17 @@
     {
         //Make sure whether the view should be shown.
         BOOL isToShow  = [itemShouldShowSet containsObject:view.muiID];
-        //If this view should be recycled and the length of its reuseidentifier over 0
-        if (!isToShow && view.reuseIdentifier.length > 0)
+        
+        if (!isToShow)
         {
-            //Then recycle the view.
-            NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
-            [recycledIdentifierSet addObject:view];
-            [view removeFromSuperview];
+            //If this view should be recycled and the length of its reuseidentifier over 0
+            if (view.reuseIdentifier.length > 0) {
+                //Then recycle the view.
+                NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
+                [recycledIdentifierSet addObject:view];
+            }
             [recycledItems addObject:view];
+            [view removeFromSuperview];
         }
         else if (isReload && view.muiID) {
             [self.shouldReloadItems addObject:view.muiID];
@@ -601,7 +604,7 @@
 }
 
 //Make sure whether the view is visible accroding to muiID.
--(BOOL)isCellVisible: (NSString *)muiID {
+-(BOOL)isCellVisible:(NSString *)muiID {
     
     BOOL result = NO;
     NSSet *visibles = [self.visibleItems copy];
