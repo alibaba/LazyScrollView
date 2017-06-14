@@ -159,7 +159,7 @@
     [_secondSet removeAllObjects],_secondSet = nil;
     _modelsSortedByTop = nil;
     _modelsSortedByBottom = nil;
-
+    
 }
 
 //replace UIScrollDelegate to TMMuiLazyScrollViewDelegate for insert code in scrollDidScroll .
@@ -187,7 +187,7 @@
         self.lastScrollOffset = scrollView.contentOffset;
         [self assembleSubviews];
         [self findViewsInVisibleRect];
-
+        
     }
     if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidScroll:)])
     {
@@ -469,19 +469,19 @@
 // A simple method to make view that should be shown show in LazyScrollView
 - (void)assembleSubviews
 {
-     CGRect visibleBounds = self.bounds;
-     // Visible area adding buffer to form a area that need to calculate which view should be shown.
-     CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
-     CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
-     [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
+    CGRect visibleBounds = self.bounds;
+    // Visible area adding buffer to form a area that need to calculate which view should be shown.
+    CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
+    CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
+    [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
 }
 
 - (void)assembleSubviewsForReload:(BOOL)isReload minY:(CGFloat)minY maxY:(CGFloat)maxY
 {
-  
+    
     NSSet *itemShouldShowSet = [self showingItemIndexSetFrom:minY to:maxY];
     self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:CGRectGetMinY(self.bounds) to:CGRectGetMaxY(self.bounds)];
-
+    
     NSMutableSet  *recycledItems = [[NSMutableSet alloc] init];
     //For recycling . Find which views should not in visible area.
     NSSet *visibles = [self.visibleItems copy];
@@ -495,10 +495,11 @@
             //Then recycle the view.
             NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
             [recycledIdentifierSet addObject:view];
-            [view removeFromSuperview];
+            view.hidden = YES;
             [recycledItems addObject:view];
         }
         else if (isReload && view.muiID) {
+            view.hidden = YES;
             [self.shouldReloadItems addObject:view.muiID];
         }
     }
@@ -529,6 +530,7 @@
                 if (viewToShow)
                 {
                     viewToShow.muiID = muiID;
+                    viewToShow.hidden = NO;
                     if (![self.visibleItems containsObject:viewToShow]) {
                         [self.visibleItems addObject:viewToShow];
                     }
@@ -577,7 +579,8 @@
     if (self.currentVisibleItemMuiID) {
         NSSet *visibles = self.visibleItems;
         for (UIView *v in visibles) {
-            if ([v.muiID isEqualToString:self.currentVisibleItemMuiID]) {
+            if ([v.muiID isEqualToString:self.currentVisibleItemMuiID]
+                && [v.reuseIdentifier isEqualToString:identifier]) {
                 view = v;
                 break;
             }
@@ -623,7 +626,8 @@
     for (UIView *view in visibles) {
         NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
         [recycledIdentifierSet addObject:view];
-        [view removeFromSuperview];
+        view.hidden = YES;
+        [view performSelectorOnMainThread:@selector(removeFromSuperview) withObject:nil waitUntilDone:YES modes:@[NSDefaultRunLoopMode]];
     }
     [_visibleItems removeAllObjects];
     [_recycledIdentifierItemsDic removeAllObjects];
