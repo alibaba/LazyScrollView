@@ -172,8 +172,10 @@
     }
     else
     {
-        [super setDelegate:self];
+        // must prepare forwarding delegate at first
         _lazyScrollViewDelegate = delegate;
+        [super setDelegate:nil];
+        [super setDelegate:self];
     }
 }
 
@@ -193,108 +195,33 @@
     {
         [self.lazyScrollViewDelegate scrollViewDidScroll:self];
     }
-    
+
 }
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView NS_AVAILABLE_IOS(3_2)
+- (id)forwardingTargetForSelector:(SEL)aSelector
 {
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidZoom:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidZoom:self];
+    id result = [super forwardingTargetForSelector:aSelector];
+    if (nil == result && self.lazyScrollViewDelegate) {
+        struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
+        if (NULL != md.name) {
+            return self.lazyScrollViewDelegate;
+        }
     }
+    return result;
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+- (BOOL)respondsToSelector:(SEL)aSelector
 {
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewWillBeginDragging:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewWillBeginDragging:self];
+    BOOL result = [super respondsToSelector:aSelector];
+    if (NO == result && self.lazyScrollViewDelegate) {
+        struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
+        if (NULL != md.name) {
+            result = [self.lazyScrollViewDelegate respondsToSelector:aSelector];
+        }
     }
+    return result;
 }
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset NS_AVAILABLE_IOS(5_0)
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewWillEndDragging:withVelocity:targetContentOffset:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewWillEndDragging:self withVelocity:velocity targetContentOffset:targetContentOffset];
-    }
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidEndDragging:self willDecelerate:decelerate];
-    }
-}
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewWillBeginDecelerating:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewWillBeginDecelerating:self];
-    }
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidEndDecelerating:self];
-    }
-}
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidEndScrollingAnimation:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidEndScrollingAnimation:self];
-    }
-}
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(viewForZoomingInScrollView:)])
-    {
-        return [self.lazyScrollViewDelegate viewForZoomingInScrollView:self];
-    }
-    return nil;
-}
-
-- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view NS_AVAILABLE_IOS(3_2)
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewWillBeginZooming:withView:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewWillBeginZooming:self withView:view];
-    }
-}
-
-
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidEndZooming:withView:atScale:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidEndZooming:self withView:view atScale:scale];
-    }
-}
-
-
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewShouldScrollToTop:)])
-    {
-        return [self.lazyScrollViewDelegate scrollViewShouldScrollToTop:self];
-    }
-    return self.scrollsToTop;
-}
-
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
-{
-    if (self.lazyScrollViewDelegate && [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] && [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidScrollToTop:)])
-    {
-        [self.lazyScrollViewDelegate scrollViewDidScrollToTop:self];
-    }
-}
 // Do Binary search here to find index in view model array.
 -(NSUInteger) binarySearchForIndex:(NSArray *)frameArray baseLine:(CGFloat)baseLine isFromTop:(BOOL)fromTop
 {
