@@ -1,86 +1,73 @@
+[![CocoaPods](https://img.shields.io/cocoapods/v/LazyScroll.svg)]() [![CocoaPods](https://img.shields.io/cocoapods/p/LazyScroll.svg)]() [![CocoaPods](https://img.shields.io/cocoapods/l/LazyScroll.svg)]()
+
 # LazyScrollView
 
-[中文说明](http://pingguohe.net/2016/01/31/lazyscroll.html)
+[中文说明](http://pingguohe.net/2016/01/31/lazyscroll.html) [中文Demo说明](http://pingguohe.net/2017/03/02/lazyScrollView-demo.html)
 
-[中文Demo说明](http://pingguohe.net/2017/03/02/lazyScrollView-demo.html)
+> 依赖 LazyScrollView，我们创建了一个模块化页面UI解决方案，详情可见 [Tangram-iOS](https://github.com/alibaba/tangram-ios)。
 
-> 依赖LazyScrollView, 我们创建了一个模块化页面UI解决方案，详情可见 [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios).
+LazyScrollView is an iOS ScrollView , to resolve the problem of reusability of views.
 
-LazyScrollView is an iOS ScrollView , to resolve the problem of reusability of views. 
+We reply another way to control reuse in a ScrollView, it depends on give a special reuse identifier to every view controlled in LazyScrollView.
 
-We reply an another way to control reuse in a ScrollView, it depends on give a special reuse identifier to every view controlled in LazyScrollView.
+Comparing to UITableView, LazyScrollView can easily create different layout, instead of the single row flow layout.
 
-Comparing to UITableView , LazyScrollView can easily create different layout , instead of the single row flow layout. 
+Comparing to UICollectionView, LazyScrollView can create views without Grid layout, and provides a easier way to create different kinds of layous in a ScrollView.
 
-Comparing to UICollectionView , LazyScrollView can create views without Grid layout , and provides a easier way to create different kinds of layous in a ScrollView .
+The system requirement is iOS 5+.
 
-The system requirement is iOS 5+
-
-> We create a modular UI solution for building native page dynamically based on `LazyScrollView`, you can see more info from this repo : [https://github.com/alibaba/tangram-ios](https://github.com/alibaba/tangram-ios)
+> We create a modular UI solution for building native page dynamically based on `LazyScrollView`, you can see more info from this repo: [Tangram-iOS](https://github.com/alibaba/tangram-ios)
 
 # Installation
 
-LazyScroll is available as `LazyScroll` in cocoapods 
+LazyScroll is available as `LazyScroll` in CocoaPods.
 
-```
-   pod 'LazyScroll'
-```
+    pod 'LazyScroll'
 
-If you don't want to use cocoapods, you can also manually add the files in `LazyScrollView` folder into your Xcode project
+If you don't want to use cocoapods, you can also manually add the files in `LazyScrollView` folder into your Xcode project.
 
 # Usage
 
     #import "TMMuiLazyScrollView.h"
     
- Then , create LazyScrollView  
+Then, create LazyScrollView:
  
 ```objectivec
 TMMuiLazyScrollView *scrollview = [[TMMuiLazyScrollView alloc]init];
 scrollview.frame = self.view.bounds;
 ```
 
-next implement`TMMuiLazyScrollViewDataSource`
+Next, implement `TMMuiLazyScrollViewDataSource`:
  
 ```objectivec
 @protocol TMMuiLazyScrollViewDataSource <NSObject>
+
 @required
-//number of item om scrollView
+
+// Number of items in scrollView.
 - (NSUInteger)numberOfItemInScrollView:(TMMuiLazyScrollView *)scrollView;
-//return view model (TMMuiRectModel) by index 
+
+// Return the view model (TMMuiRectModel) by index.
 - (TMMuiRectModel *)scrollView:(TMMuiLazyScrollView *)scrollView rectModelAtIndex:(NSUInteger)index;
-//return view by the unique string that identify a model(muiID) . You should render the item view here. And the view is probably . Item view display. You should always try to reuse views by setting each view's reuseIdentifier and querying for available reusable views with dequeueReusableItemWithIdentifier:
+
+// Return view by the unique string that identify a model (muiID).
+// You should render the item view here.
+// You should ALWAYS try to reuse views by setting each view's reuseIdentifier.
 - (UIView *)scrollView:(TMMuiLazyScrollView *)scrollView itemByMuiID:(NSString *)muiID;
+
 @end
 ```
 
-next , set datasource delegate of LazyScrollView
+Next, set datasource of LazyScrollView:
 
 ```objectivec
 scrollview.dataSource = self;
 ```
 
-finally , do reload
+Finally, do reload:
 
 ```objectivec
 [scrollview reloadData];
 ```
 
- To view detailed usage , please clone the repo and open project to see demo. 
-
-# License
-
-LazyScroll is releasd under MIT license .
-
-````
-The MIT License
-
-Copyright (c) 2017 Alibaba
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-````
-
+To view detailed usage, please clone the repo and open the demo project. 

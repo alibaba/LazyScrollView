@@ -1,0 +1,6 @@
+source "https://github.com/CocoaPods/Specs.git"
+
+target 'LazyScrollViewDemo' do
+	platform :ios, '8.0'
+    pod 'LazyScroll', :path=>'../'
+end

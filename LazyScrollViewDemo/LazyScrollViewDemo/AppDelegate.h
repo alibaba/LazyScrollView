@@ -2,8 +2,7 @@
 //  AppDelegate.h
 //  LazyScrollViewDemo
 //
-//  Created by xiaoxia on 2017/2/27.
-//  Copyright © 2017年 taobao. All rights reserved.
+//  Copyright (c) 2017 Alibaba. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
