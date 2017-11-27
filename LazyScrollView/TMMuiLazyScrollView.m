@@ -7,7 +7,7 @@
 
 #import "TMMuiLazyScrollView.h"
 #import <objc/runtime.h>
-#import "TMUtils.h"
+#import <TMUtils/TMUtils.h>
 
 #define RenderBufferWindow 20.f
 

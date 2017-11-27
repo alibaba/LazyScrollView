@@ -6,7 +6,7 @@
 
 > 依赖 LazyScrollView，我们创建了一个模块化页面UI解决方案，详情可见 [Tangram-iOS](https://github.com/alibaba/tangram-ios)。
 
-LazyScrollView is an iOS ScrollView , to resolve the problem of reusability of views.
+LazyScrollView is an iOS ScrollView, to resolve the problem of reusability of views.
 
 We reply another way to control reuse in a ScrollView, it depends on give a special reuse identifier to every view controlled in LazyScrollView.
 

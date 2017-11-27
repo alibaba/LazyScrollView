@@ -29,7 +29,9 @@ xcuserdata/
 # CocoaPods
 Pods/
 Podfile.lock
+*.xcworkspace
 
 # Demo
+*Demo/Pods/
+*Demo/Podfile.lock
 *Demo/*.xcworkspace
-
