@@ -4,5 +4,5 @@ platform :ios, '8.0'
 
 target 'LazyScrollViewDemo' do
     pod 'LazyScroll', :path => '../'
-    pod 'TMUtils', :path => '../'
+    # pod 'TMUtils', :path => '../'
 end
