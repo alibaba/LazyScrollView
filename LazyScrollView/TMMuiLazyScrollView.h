@@ -48,16 +48,16 @@
                    itemByMuiID:(nonnull NSString *)muiID;
 
 @end
-
-@protocol TMMuiLazyScrollViewDelegate<NSObject, UIScrollViewDelegate>
-
-@end
-
 //****************************************************************
+
 
 @interface TMMuiLazyScrollView : UIScrollView
 
+// 注意，修改 delegate 属性后需要将 scrollViewDidScroll: 事件转发回给 TangramView
+
 @property (nonatomic, weak, nullable) id<TMMuiLazyScrollViewDataSource> dataSource;
+
+@property (nonatomic, weak, nullable) id<UIScrollViewDelegate> forwardingDelegate;
 
 // Default value is NO.
 @property (nonatomic, assign) BOOL autoAddSubview;
@@ -67,6 +67,9 @@
 // Items which is in the visible screen area.
 // It is a sub set of "visibleItems".
 @property (nonatomic, strong, readonly, nonnull) NSSet *inScreenVisibleItems;
+// Tangram can be footerView for TableView, this outerScrollView is your tableview.
+@property (nonatomic, weak, nullable) UIScrollView *outerScrollView;
+
 
 // reloads everything from scratch and redisplays visible views.
 - (void)reloadData;
@@ -84,4 +87,10 @@
 // After call this method, the times of mui_didEnterWithTimes will start from 0
 - (void)resetViewEnterTimes;
 
+@end
+
+//****************************************************************
+
+@interface TMMuiLazyScrollViewObserver: NSObject
+@property (nonatomic, weak, nullable) TMMuiLazyScrollView *lazyScrollView;
 @end

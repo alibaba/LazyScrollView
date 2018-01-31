@@ -60,11 +60,6 @@
 // Store view models (TMMuiRectModel).
 @property (nonatomic, strong) NSMutableArray *itemsFrames;
 
-// ScrollView delegate, store original scrollDelegate here.
-// Because of lazyscrollview need calculate what views should be shown
-// in scrollDidScroll.
-@property (nonatomic, weak) id<UIScrollViewDelegate> lazyScrollViewDelegate;
-
 // View Model sorted by Top Edge.
 @property (nonatomic, strong) NSArray *modelsSortedByTop;
 // View Model sorted by Bottom Edge.
@@ -92,6 +87,9 @@
 @property (nonatomic, strong) NSMutableDictionary *enterDict;
 // Store last time visible muiID. Used for calc enter times.
 @property (nonatomic, strong) NSMutableSet *lastVisibleMuiID;
+
+@property (nonatomic, strong) TMMuiLazyScrollViewObserver *outerScrollViewObserver;
+
 
 @end
 
@@ -160,15 +158,19 @@
     }
 }
 
-- (void)setDelegate:(id<UIScrollViewDelegate>)delegate
+-(void)setOuterScrollView:(UIScrollView *)outerScrollView
 {
-    if (!delegate) {
-        [super setDelegate:nil];
-        _lazyScrollViewDelegate = nil;
-    } else {
-        _lazyScrollViewDelegate = delegate;
-        [super setDelegate:self];
+    _outerScrollView = outerScrollView;
+    if (self.outerScrollViewObserver == nil) {
+        self.outerScrollViewObserver = [[TMMuiLazyScrollViewObserver alloc]init];
+        self.outerScrollViewObserver.lazyScrollView = self;
     }
+    
+    @try {
+        [outerScrollView removeObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset"];
+    }
+    @catch (NSException * __unused exception) {}
+    [outerScrollView addObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
 
 #pragma mark - Lifecycle
@@ -186,7 +188,7 @@
         _itemsFrames = [[NSMutableArray alloc] init];
         _firstSet = [[NSMutableSet alloc] initWithCapacity:30];
         _secondSet = [[NSMutableSet alloc] initWithCapacity:30];
-        [super setDelegate:self];
+        self.delegate = self;
     }
     return self;
 }
@@ -194,8 +196,16 @@
 - (void)dealloc
 {
     _dataSource = nil;
-    [super setDelegate:nil];
-    _lazyScrollViewDelegate = nil;
+    self.delegate = nil;
+    _forwardingDelegate = nil;
+    if (_outerScrollView) {
+        @try {
+            [_outerScrollView removeObserver:_outerScrollViewObserver forKeyPath:@"contentOffset"];
+        }
+        @catch (NSException *exception) {
+            
+        }
+    }
 }
 
 #pragma mark - ScrollViewDelegate
@@ -219,19 +229,19 @@
 {
     [self didScroll];
     
-    if (self.lazyScrollViewDelegate &&
-        [self.lazyScrollViewDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] &&
-        [self.lazyScrollViewDelegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
-        [self.lazyScrollViewDelegate scrollViewDidScroll:self];
+    if (self.forwardingDelegate &&
+        [self.forwardingDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] &&
+        [self.forwardingDelegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
+        [self.forwardingDelegate scrollViewDidScroll:self];
     }
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector
 {
-    if (self.lazyScrollViewDelegate) {
+    if (self.forwardingDelegate) {
         struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
         if (NULL != md.name) {
-            return self.lazyScrollViewDelegate;
+            return self.forwardingDelegate;
         }
     }
     return [super forwardingTargetForSelector:aSelector];
@@ -240,10 +250,10 @@
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     BOOL result = [super respondsToSelector:aSelector];
-    if (NO == result && self.lazyScrollViewDelegate) {
+    if (NO == result && self.forwardingDelegate) {
         struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
         if (NULL != md.name) {
-            result = [self.lazyScrollViewDelegate respondsToSelector:aSelector];
+            result = [self.forwardingDelegate respondsToSelector:aSelector];
         }
     }
     return result;
@@ -393,17 +403,34 @@
 // A simple method to show view that should be shown in LazyScrollView.
 - (void)assembleSubviews
 {
-    CGRect visibleBounds = self.bounds;
-    CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
-    CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
-    [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
+    if (self.outerScrollView) {
+        CGPoint pointInScrollView = [self.superview convertPoint:self.frame.origin toView:self.outerScrollView];
+        CGFloat minY = self.outerScrollView.contentOffset.y  - pointInScrollView.y - RenderBufferWindow/2 ;
+        //maxY 计算的逻辑，需要修改，增加的height，需要计算的更加明确
+        CGFloat maxY = self.outerScrollView.contentOffset.y + self.outerScrollView.frame.size.height - pointInScrollView.y + RenderBufferWindow/2;
+        if (maxY > 0) {
+            [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
+        }
+        
+    }
+    else
+    {
+        CGRect visibleBounds = self.bounds;
+        CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
+        CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
+        [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
+    }
 }
 
 - (void)assembleSubviewsForReload:(BOOL)isReload minY:(CGFloat)minY maxY:(CGFloat)maxY
 {
     NSSet *itemShouldShowSet = [self showingItemIndexSetFrom:minY to:maxY];
-    self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:CGRectGetMinY(self.bounds) to:CGRectGetMaxY(self.bounds)];
-    
+    if (self.outerScrollView) {
+        self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:minY to:maxY];
+    }
+    else{
+        self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:CGRectGetMinY(self.bounds) to:CGRectGetMaxY(self.bounds)];
+    }
     NSMutableSet  *recycledItems = [[NSMutableSet alloc] init];
     // For recycling. Find which views should not in visible area.
     NSSet *visibles = [_visibleItems copy];
@@ -505,10 +532,21 @@
 {
     [self creatScrollViewIndex];
     if (self.itemsFrames.count > 0) {
-        CGRect visibleBounds = self.bounds;
-        CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
-        CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
-        [self assembleSubviewsForReload:YES minY:minY maxY:maxY];
+        if (self.outerScrollView) {
+            CGRect rectInScrollView = [self convertRect:self.frame toView:self.outerScrollView];
+            CGFloat minY = self.outerScrollView.contentOffset.y - rectInScrollView.origin.y - RenderBufferWindow;
+            CGFloat maxY = self.outerScrollView.contentOffset.y + self.outerScrollView.frame.size.height - rectInScrollView.origin.y + self.outerScrollView.frame.size.height + RenderBufferWindow;
+            if (maxY > 0) {
+                [self assembleSubviewsForReload:YES minY:minY maxY:maxY];
+            }
+        }
+        else{
+            CGRect visibleBounds = self.bounds;
+            // 上下增加200像素的缓冲区
+            CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
+            CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
+            [self assembleSubviewsForReload:YES minY:minY maxY:maxY];
+        }
         [self findViewsInVisibleRect];
     }
 
@@ -607,3 +645,23 @@
 }
 
 @end
+
+@implementation TMMuiLazyScrollViewObserver
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if([keyPath isEqualToString:@"contentOffset"])
+    {
+        CGPoint newPoint = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
+        CGFloat buffer = RenderBufferWindow / 2;
+        if (buffer < ABS(newPoint.y - self.lazyScrollView.lastScrollOffset.y)) {
+            self.lazyScrollView.lastScrollOffset = newPoint;
+            [self.lazyScrollView assembleSubviews];
+            [self.lazyScrollView findViewsInVisibleRect];
+        }
+    }
+}
+
+@end
+
+
