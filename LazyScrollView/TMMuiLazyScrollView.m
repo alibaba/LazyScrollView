@@ -489,9 +489,6 @@
                     }
                     if (self.autoAddSubview) {
                         if (viewToShow.superview != self) {
-                            if (viewToShow.superview) {
-                                [viewToShow removeFromSuperview];
-                            }
                             [self addSubview:viewToShow];
                         }
                     }
