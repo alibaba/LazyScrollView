@@ -71,3 +71,6 @@ Finally, do reload:
 ```
 
 To view detailed usage, please clone the repo and open the demo project. 
+
+# WeChatGroup
+Search `longerian` to be invited in WeChat.
