@@ -162,6 +162,8 @@
         _modelsSortedByBottom = [[NSArray alloc]init];
         
         _recycledIdentifierItemsDic = [[NSMutableDictionary alloc] init];
+        _recycledMuiIDItemsDic = [[NSMutableDictionary alloc] init];
+        
         _visibleItems = [[NSMutableSet alloc] init];
         _inScreenVisibleItems = [[NSMutableSet alloc] init];
         
@@ -456,7 +458,7 @@
                 if (shouldReload) {
                     _currentVisibleItemMuiID = muiID;
                 }
-                UIView *viewToShow = [self.dataSource scrollView:self itemByMuiID:muiID];
+                UIView *viewToShow = [_dataSource scrollView:self itemByMuiID:muiID];
                 _currentVisibleItemMuiID = nil;
                 // Call afterGetView.
                 if ([viewToShow conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] &&
@@ -469,7 +471,7 @@
                     if (![_visibleItems containsObject:viewToShow]) {
                         [_visibleItems addObject:viewToShow];
                     }
-                    if (self.autoAddSubview) {
+                    if (_autoAddSubview) {
                         if (viewToShow.superview != self) {
                             [self addSubview:viewToShow];
                         }
