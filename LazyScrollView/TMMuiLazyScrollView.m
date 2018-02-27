@@ -47,49 +47,52 @@
 //****************************************************************
 
 @interface TMMuiLazyScrollView() <UIScrollViewDelegate> {
-    NSMutableSet *_visibleItems;
-    NSMutableSet *_inScreenVisibleItems;
+    NSMutableSet<UIView *> *_visibleItems;
+    NSMutableSet<UIView *> *_inScreenVisibleItems;
+    
+    // Store view models (TMMuiRectModel).
+    NSMutableArray<TMMuiRectModel *> *_itemsFrames;
+    
+    // Store reuseable cells by reuseIdentifier. The key is reuseIdentifier
+    // of views , value is an array that contains reuseable cells.
+    NSMutableDictionary<NSString *, NSMutableSet<UIView *> *> *_recycledIdentifierItemsDic;
+    // Store reuseable cells by muiID.
+    NSMutableDictionary<NSString *, UIView *> *_recycledMuiIDItemsDic;
+    
+    // Store view models below contentOffset of ScrollView
+    NSMutableSet<NSString *> *_firstSet;
+    // Store view models above contentOffset + height of ScrollView
+    NSMutableSet<NSString *> *_secondSet;
+    
+    // View Model sorted by Top Edge.
+    NSArray<TMMuiRectModel *> *_modelsSortedByTop;
+    // View Model sorted by Bottom Edge.
+    NSArray<TMMuiRectModel *> *_modelsSortedByBottom;
+    
+    // It is used to store views need to assign new value after reload.
+    NSMutableSet<NSString *> *_shouldReloadItems;
+    
+    // Store the times of view entered the screen, the key is muiID.
+    NSMutableDictionary<NSString *, NSNumber *> *_enterDic;
+    
+    // Record current muiID of visible view for calculate.
+    // Will be used for dequeueReusableItem methods.
+    NSString *_currentVisibleItemMuiID;
+    
+    // Record muiIDs of visible items. Used for calc enter times.
+    NSSet<NSString *> *_muiIDOfVisibleViews;
+    // Store last time visible muiID. Used for calc enter times.
+    NSSet<NSString *> *_lastVisibleMuiID;
+    
+    TMMuiLazyScrollViewObserver *_outerScrollViewObserver;
+    
+    BOOL _forwardingDelegateCanPerformScrollViewDidScrollSelector;
+    
+    @package
+    // Record contentOffset of scrollview in previous time that calculate
+    // views to show
+    CGPoint _lastScrollOffset;
 }
-
-// Store reuseable cells by reuseIdentifier. The key is reuseIdentifier
-// of views , value is an array that contains reuseable cells.
-@property (nonatomic, strong) NSMutableDictionary *recycledIdentifierItemsDic;
-// Store reuseable cells by muiID.
-@property (nonatomic, strong) NSMutableDictionary *recycledMuiIDItemsDic;
-
-// Store view models (TMMuiRectModel).
-@property (nonatomic, strong) NSMutableArray *itemsFrames;
-
-// View Model sorted by Top Edge.
-@property (nonatomic, strong) NSArray *modelsSortedByTop;
-// View Model sorted by Bottom Edge.
-@property (nonatomic, strong) NSArray *modelsSortedByBottom;
-
-// Store view models below contentOffset of ScrollView
-@property (nonatomic, strong) NSMutableSet *firstSet;
-// Store view models above contentOffset + height of ScrollView
-@property (nonatomic, strong)  NSMutableSet *secondSet;
-
-// Record contentOffset of scrollview in previous time that calculate
-// views to show
-@property (nonatomic, assign) CGPoint lastScrollOffset;
-
-// Record current muiID of visible view for calculate.
-// Will be used for dequeueReusableItem methods.
-@property (nonatomic, strong) NSString *currentVisibleItemMuiID;
-
-// It is used to store views need to assign new value after reload.
-@property (nonatomic, strong) NSMutableSet *shouldReloadItems;
-
-// Record muiIDs of visible items. Used for calc enter times.
-@property (nonatomic, strong) NSSet *muiIDOfVisibleViews;
-// Store the times of view entered the screen, the key is muiID.
-@property (nonatomic, strong) NSMutableDictionary *enterDict;
-// Store last time visible muiID. Used for calc enter times.
-@property (nonatomic, strong) NSMutableSet *lastVisibleMuiID;
-
-@property (nonatomic, strong) TMMuiLazyScrollViewObserver *outerScrollViewObserver;
-
 
 @end
 
@@ -97,50 +100,7 @@
 
 @implementation TMMuiLazyScrollView
 
-@dynamic visibleItems, inScreenVisibleItems;
-
 #pragma mark - Getter & Setter
-
-- (NSMutableSet *)shouldReloadItems
-{
-    if (nil == _shouldReloadItems) {
-        _shouldReloadItems = [[NSMutableSet alloc] init];
-    }
-    return _shouldReloadItems;
-}
-
-- (NSArray *)modelsSortedByTop
-{
-    if (!_modelsSortedByTop){
-        _modelsSortedByTop = [[NSArray alloc] init];
-    }
-    return _modelsSortedByTop;
-}
-
-- (NSArray *)modelsSortedByBottom
-{
-    if (!_modelsSortedByBottom) {
-        _modelsSortedByBottom = [[NSArray alloc]init];
-    }
-    return _modelsSortedByBottom;
-}
-
-- (NSMutableDictionary *)enterDict
-{
-    if (nil == _enterDict) {
-        _enterDict = [[NSMutableDictionary alloc]init];
-    }
-    return _enterDict;
-}
-
-- (NSMutableDictionary *)recycledMuiIDItemsDic
-{
-    if(nil == _recycledMuiIDItemsDic) {
-        _recycledMuiIDItemsDic = [[NSMutableDictionary alloc]init];
-    }
-    return _recycledMuiIDItemsDic;
-}
-
 - (NSSet *)inScreenVisibleItems
 {
     return [_inScreenVisibleItems copy];
@@ -161,16 +121,29 @@
 -(void)setOuterScrollView:(UIScrollView *)outerScrollView
 {
     _outerScrollView = outerScrollView;
-    if (self.outerScrollViewObserver == nil) {
-        self.outerScrollViewObserver = [[TMMuiLazyScrollViewObserver alloc]init];
-        self.outerScrollViewObserver.lazyScrollView = self;
+    if (_outerScrollViewObserver == nil) {
+        _outerScrollViewObserver = [[TMMuiLazyScrollViewObserver alloc]init];
+        _outerScrollViewObserver.lazyScrollView = self;
     }
     
     @try {
-        [outerScrollView removeObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset"];
+        [outerScrollView removeObserver:_outerScrollViewObserver forKeyPath:@"contentOffset"];
     }
     @catch (NSException * __unused exception) {}
-    [outerScrollView addObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    [outerScrollView addObserver:_outerScrollViewObserver
+                      forKeyPath:@"contentOffset"
+                         options:NSKeyValueObservingOptionNew
+                         context:nil];
+}
+
+- (void)setForwardingDelegate:(id<UIScrollViewDelegate>)forwardingDelegate {
+    _forwardingDelegateCanPerformScrollViewDidScrollSelector = NO;
+    
+    _forwardingDelegate = forwardingDelegate;
+    
+    _forwardingDelegateCanPerformScrollViewDidScrollSelector =
+    [_forwardingDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] &&
+    [_forwardingDelegate respondsToSelector:@selector(scrollViewDidScroll:)];
 }
 
 #pragma mark - Lifecycle
@@ -182,12 +155,23 @@
         self.autoresizesSubviews = NO;
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
+        
+        _shouldReloadItems = [[NSMutableSet alloc] init];
+        
+        _modelsSortedByTop = [[NSArray alloc] init];
+        _modelsSortedByBottom = [[NSArray alloc]init];
+        
         _recycledIdentifierItemsDic = [[NSMutableDictionary alloc] init];
         _visibleItems = [[NSMutableSet alloc] init];
         _inScreenVisibleItems = [[NSMutableSet alloc] init];
+        
         _itemsFrames = [[NSMutableArray alloc] init];
+        
         _firstSet = [[NSMutableSet alloc] initWithCapacity:30];
         _secondSet = [[NSMutableSet alloc] initWithCapacity:30];
+        
+        _enterDic = [[NSMutableDictionary alloc] init];
+        
         self.delegate = self;
     }
     return self;
@@ -217,8 +201,8 @@
     // times of calculating.
     CGFloat currentY = self.contentOffset.y;
     CGFloat buffer = RenderBufferWindow / 2;
-    if (buffer < ABS(currentY - self.lastScrollOffset.y)) {
-        self.lastScrollOffset = self.contentOffset;
+    if (buffer < ABS(currentY - _lastScrollOffset.y)) {
+        _lastScrollOffset = self.contentOffset;
         [self assembleSubviews];
         [self findViewsInVisibleRect];
     }
@@ -229,19 +213,17 @@
 {
     [self didScroll];
     
-    if (self.forwardingDelegate &&
-        [self.forwardingDelegate conformsToProtocol:@protocol(UIScrollViewDelegate)] &&
-        [self.forwardingDelegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
-        [self.forwardingDelegate scrollViewDidScroll:self];
+    if (_forwardingDelegateCanPerformScrollViewDidScrollSelector) {
+        [_forwardingDelegate scrollViewDidScroll:scrollView];
     }
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector
 {
-    if (self.forwardingDelegate) {
+    if (_forwardingDelegate) {
         struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
         if (NULL != md.name) {
-            return self.forwardingDelegate;
+            return _forwardingDelegate;
         }
     }
     return [super forwardingTargetForSelector:aSelector];
@@ -250,10 +232,10 @@
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     BOOL result = [super respondsToSelector:aSelector];
-    if (NO == result && self.forwardingDelegate) {
+    if (NO == result && _forwardingDelegate) {
         struct objc_method_description md = protocol_getMethodDescription(@protocol(UIScrollViewDelegate), aSelector, NO, YES);
         if (NULL != md.name) {
-            result = [self.forwardingDelegate respondsToSelector:aSelector];
+            result = [_forwardingDelegate respondsToSelector:aSelector];
         }
     }
     return result;
@@ -264,7 +246,7 @@
 // Do Binary search here to find index in view model array.
 - (NSUInteger)binarySearchForIndex:(NSArray *)frameArray baseLine:(CGFloat)baseLine isFromTop:(BOOL)fromTop
 {
-    NSInteger min = 0 ;
+    NSInteger min = 0;
     NSInteger max = frameArray.count - 1;
     NSInteger mid = ceilf((min + max) * 0.5f);
     while (mid > min && mid < max) {
@@ -304,55 +286,55 @@
 
 // Get which views should be shown in LazyScrollView.
 // The kind of values In NSSet is muiID.
-- (NSSet *)showingItemIndexSetFrom:(CGFloat)startY to:(CGFloat)endY
+- (NSSet<NSString *> *)showingItemIndexSetFrom:(CGFloat)startY to:(CGFloat)endY
 {
-    NSUInteger endBottomIndex = [self binarySearchForIndex:self.modelsSortedByBottom baseLine:startY isFromTop:NO];
-    [self.firstSet removeAllObjects];
+    NSUInteger endBottomIndex = [self binarySearchForIndex:_modelsSortedByBottom baseLine:startY isFromTop:NO];
+    [_firstSet removeAllObjects];
     for (NSUInteger i = 0; i <= endBottomIndex; i++) {
-        TMMuiRectModel *model = [self.modelsSortedByBottom tm_safeObjectAtIndex:i];
+        TMMuiRectModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
         if (model != nil) {
-            [self.firstSet addObject:model.muiID];
+            [_firstSet addObject:model.muiID];
         }
     }
     
-    NSUInteger endTopIndex = [self binarySearchForIndex:self.modelsSortedByTop baseLine:endY isFromTop:YES];
-    [self.secondSet removeAllObjects];
+    NSUInteger endTopIndex = [self binarySearchForIndex:_modelsSortedByTop baseLine:endY isFromTop:YES];
+    [_secondSet removeAllObjects];
     for (NSInteger i = 0; i <= endTopIndex; i++) {
-        TMMuiRectModel *model = [self.modelsSortedByTop tm_safeObjectAtIndex:i];
+        TMMuiRectModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
         if (model != nil) {
-            [self.secondSet addObject:model.muiID];
+            [_secondSet addObject:model.muiID];
         }
     }
     
-    [self.firstSet intersectSet:self.secondSet];
-    return [self.firstSet copy];
+    [_firstSet intersectSet:_secondSet];
+    return [_firstSet copy];
 }
 
 // Get view models from delegate. Create to indexes for sorting.
 - (void)creatScrollViewIndex
 {
     NSUInteger count = 0;
-    if (self.dataSource &&
-        [self.dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
-        [self.dataSource respondsToSelector:@selector(numberOfItemInScrollView:)]) {
-        count = [self.dataSource numberOfItemInScrollView:self];
+    if (_dataSource &&
+        [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+        [_dataSource respondsToSelector:@selector(numberOfItemInScrollView:)]) {
+        count = [_dataSource numberOfItemInScrollView:self];
     }
     
-    [self.itemsFrames removeAllObjects];
-    for (NSUInteger i = 0 ; i< count ; i++) {
-        TMMuiRectModel *rectmodel;
-        if (self.dataSource &&
-            [self.dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
-            [self.dataSource respondsToSelector:@selector(scrollView: rectModelAtIndex:)]) {
-            rectmodel = [self.dataSource scrollView:self rectModelAtIndex:i];
+    [_itemsFrames removeAllObjects];
+    for (NSUInteger i = 0 ; i < count ; i++) {
+        TMMuiRectModel *rectmodel = nil;
+        if (_dataSource &&
+            [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+            [_dataSource respondsToSelector:@selector(scrollView:rectModelAtIndex:)]) {
+            rectmodel = [_dataSource scrollView:self rectModelAtIndex:i];
             if (rectmodel.muiID.length == 0) {
                 rectmodel.muiID = [NSString stringWithFormat:@"%lu", (unsigned long)i];
             }
         }
-        [self.itemsFrames tm_safeAddObject:rectmodel];
+        [_itemsFrames tm_safeAddObject:rectmodel];
     }
     
-    self.modelsSortedByTop = [self.itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
+    _modelsSortedByTop = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
                                  CGRect rect1 = [(TMMuiRectModel *) obj1 absRect];
                                  CGRect rect2 = [(TMMuiRectModel *) obj2 absRect];
                                  if (rect1.origin.y < rect2.origin.y) {
@@ -364,7 +346,7 @@
                                  }
                              }];
     
-    self.modelsSortedByBottom = [self.itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
+    _modelsSortedByBottom = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
                                     CGRect rect1 = [(TMMuiRectModel *) obj1 absRect];
                                     CGRect rect2 = [(TMMuiRectModel *) obj2 absRect];
                                     CGFloat bottom1 = CGRectGetMaxY(rect1);
@@ -381,33 +363,33 @@
 
 - (void)findViewsInVisibleRect
 {
-    NSMutableSet *itemViewSet = [self.muiIDOfVisibleViews mutableCopy];
-    [itemViewSet minusSet:self.lastVisibleMuiID];
+    NSMutableSet *itemViewSet = [_muiIDOfVisibleViews mutableCopy];
+    [itemViewSet minusSet:_lastVisibleMuiID];
     for (UIView *view in _visibleItems) {
         if (view && [itemViewSet containsObject:view.muiID]) {
             if ([view conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] &&
                 [view respondsToSelector:@selector(mui_didEnterWithTimes:)]) {
                 NSUInteger times = 0;
-                if ([self.enterDict tm_safeObjectForKey:view.muiID] != nil) {
-                    times = [self.enterDict tm_integerForKey:view.muiID] + 1;
+                if ([_enterDic tm_safeObjectForKey:view.muiID] != nil) {
+                    times = [_enterDic tm_integerForKey:view.muiID] + 1;
                 }
                 NSNumber *showTimes = [NSNumber numberWithUnsignedInteger:times];
-                [self.enterDict tm_safeSetObject:showTimes forKey:view.muiID];
+                [_enterDic tm_safeSetObject:showTimes forKey:view.muiID];
                 [(UIView<TMMuiLazyScrollViewCellProtocol> *)view mui_didEnterWithTimes:times];
             }
         }
     }
-    self.lastVisibleMuiID = [self.muiIDOfVisibleViews copy];
+    _lastVisibleMuiID = [_muiIDOfVisibleViews copy];
 }
 
 // A simple method to show view that should be shown in LazyScrollView.
 - (void)assembleSubviews
 {
-    if (self.outerScrollView) {
-        CGPoint pointInScrollView = [self.superview convertPoint:self.frame.origin toView:self.outerScrollView];
-        CGFloat minY = self.outerScrollView.contentOffset.y  - pointInScrollView.y - RenderBufferWindow/2 ;
+    if (_outerScrollView) {
+        CGPoint pointInScrollView = [self.superview convertPoint:self.frame.origin toView:_outerScrollView];
+        CGFloat minY = _outerScrollView.contentOffset.y  - pointInScrollView.y - RenderBufferWindow/2 ;
         //maxY 计算的逻辑，需要修改，增加的height，需要计算的更加明确
-        CGFloat maxY = self.outerScrollView.contentOffset.y + self.outerScrollView.frame.size.height - pointInScrollView.y + RenderBufferWindow/2;
+        CGFloat maxY = _outerScrollView.contentOffset.y + _outerScrollView.frame.size.height - pointInScrollView.y + RenderBufferWindow/2;
         if (maxY > 0) {
             [self assembleSubviewsForReload:NO minY:minY maxY:maxY];
         }
@@ -424,14 +406,14 @@
 
 - (void)assembleSubviewsForReload:(BOOL)isReload minY:(CGFloat)minY maxY:(CGFloat)maxY
 {
-    NSSet *itemShouldShowSet = [self showingItemIndexSetFrom:minY to:maxY];
-    if (self.outerScrollView) {
-        self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:minY to:maxY];
+    NSSet<NSString *> *itemShouldShowSet = [self showingItemIndexSetFrom:minY to:maxY];
+    if (_outerScrollView) {
+        _muiIDOfVisibleViews = [self showingItemIndexSetFrom:minY to:maxY];
     }
     else{
-        self.muiIDOfVisibleViews = [self showingItemIndexSetFrom:CGRectGetMinY(self.bounds) to:CGRectGetMaxY(self.bounds)];
+        _muiIDOfVisibleViews = [self showingItemIndexSetFrom:CGRectGetMinY(self.bounds) to:CGRectGetMaxY(self.bounds)];
     }
-    NSMutableSet  *recycledItems = [[NSMutableSet alloc] init];
+    NSMutableSet<UIView *> *recycledItems = [[NSMutableSet alloc] init];
     // For recycling. Find which views should not in visible area.
     NSSet *visibles = [_visibleItems copy];
     for (UIView *view in visibles) {
@@ -444,18 +426,18 @@
             // If this view should be recycled and the length of its reuseidentifier is over 0.
             if (view.reuseIdentifier.length > 0) {
                 // Then recycle the view.
-                NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
+                NSMutableSet<UIView *> *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
                 [recycledIdentifierSet addObject:view];
                 view.hidden = YES;
                 [recycledItems addObject:view];
                 // Also add to muiID recycle dict.
-                [self.recycledMuiIDItemsDic tm_safeSetObject:view forKey:view.muiID];
+                [_recycledMuiIDItemsDic tm_safeSetObject:view forKey:view.muiID];
             } else if(isReload && view.muiID) {
                 // Need to reload unreusable views.
-                [self.shouldReloadItems addObject:view.muiID];
+                [_shouldReloadItems addObject:view.muiID];
             }
         } else if (isReload && view.muiID) {
-            [self.shouldReloadItems addObject:view.muiID];
+            [_shouldReloadItems addObject:view.muiID];
         }
         
     }
@@ -463,19 +445,19 @@
     [recycledItems removeAllObjects];
     // Creare new view.
     for (NSString *muiID in itemShouldShowSet) {
-        BOOL shouldReload = isReload || [self.shouldReloadItems containsObject:muiID];
-        if (![self isCellVisible:muiID] || [self.shouldReloadItems containsObject:muiID]) {
-            if (self.dataSource &&
-                [self.dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
-                [self.dataSource respondsToSelector:@selector(scrollView:itemByMuiID:)]) {
+        BOOL shouldReload = isReload || [_shouldReloadItems containsObject:muiID];
+        if (![self isCellVisible:muiID] || [_shouldReloadItems containsObject:muiID]) {
+            if (_dataSource &&
+                [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+                [_dataSource respondsToSelector:@selector(scrollView:itemByMuiID:)]) {
                 // Create view by dataSource.
                 // If you call dequeue method in your dataSource, the currentVisibleItemMuiID
                 // will be used for searching reusable view.
                 if (shouldReload) {
-                    self.currentVisibleItemMuiID = muiID;
+                    _currentVisibleItemMuiID = muiID;
                 }
                 UIView *viewToShow = [self.dataSource scrollView:self itemByMuiID:muiID];
-                self.currentVisibleItemMuiID = nil;
+                _currentVisibleItemMuiID = nil;
                 // Call afterGetView.
                 if ([viewToShow conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] &&
                     [viewToShow respondsToSelector:@selector(mui_afterGetView)]) {
@@ -494,7 +476,7 @@
                     }
                 }
             }
-            [self.shouldReloadItems removeObject:muiID];
+            [_shouldReloadItems removeObject:muiID];
         }
     }
     [_inScreenVisibleItems removeAllObjects];
@@ -510,16 +492,16 @@
 }
 
 // Get NSSet accroding to reuse identifier.
-- (NSMutableSet *)recycledIdentifierSet:(NSString *)reuseIdentifier;
+- (NSMutableSet<UIView *> *)recycledIdentifierSet:(NSString *)reuseIdentifier;
 {
     if (reuseIdentifier.length == 0) {
         return nil;
     }
     
-    NSMutableSet *result = [self.recycledIdentifierItemsDic tm_safeObjectForKey:reuseIdentifier];
+    NSMutableSet<UIView *> *result = [_recycledIdentifierItemsDic tm_safeObjectForKey:reuseIdentifier];
     if (result == nil) {
         result = [[NSMutableSet alloc] init];
-        [self.recycledIdentifierItemsDic setObject:result forKey:reuseIdentifier];
+        [_recycledIdentifierItemsDic setObject:result forKey:reuseIdentifier];
     }
     return result;
 }
@@ -528,11 +510,11 @@
 - (void)reloadData
 {
     [self creatScrollViewIndex];
-    if (self.itemsFrames.count > 0) {
-        if (self.outerScrollView) {
-            CGRect rectInScrollView = [self convertRect:self.frame toView:self.outerScrollView];
-            CGFloat minY = self.outerScrollView.contentOffset.y - rectInScrollView.origin.y - RenderBufferWindow;
-            CGFloat maxY = self.outerScrollView.contentOffset.y + self.outerScrollView.frame.size.height - rectInScrollView.origin.y + self.outerScrollView.frame.size.height + RenderBufferWindow;
+    if (_itemsFrames.count > 0) {
+        if (_outerScrollView) {
+            CGRect rectInScrollView = [self convertRect:self.frame toView:_outerScrollView];
+            CGFloat minY = _outerScrollView.contentOffset.y - rectInScrollView.origin.y - RenderBufferWindow;
+            CGFloat maxY = _outerScrollView.contentOffset.y + _outerScrollView.frame.size.height - rectInScrollView.origin.y + _outerScrollView.frame.size.height + RenderBufferWindow;
             if (maxY > 0) {
                 [self assembleSubviewsForReload:YES minY:minY maxY:maxY];
             }
@@ -575,22 +557,22 @@
 {
     UIView *view = nil;
     
-    if (self.currentVisibleItemMuiID) {
+    if (_currentVisibleItemMuiID) {
         NSSet *visibles = _visibleItems;
         for (UIView *v in visibles) {
-            if ([v.muiID isEqualToString:self.currentVisibleItemMuiID] && [v.reuseIdentifier isEqualToString:identifier]) {
+            if ([v.muiID isEqualToString:_currentVisibleItemMuiID] && [v.reuseIdentifier isEqualToString:identifier]) {
                 view = v;
                 break;
             }
         }
     } else if(muiID && [muiID isKindOfClass:[NSString class]] && muiID.length > 0) {
         // Try to get reusable view from muiID dict.
-        view = [self.recycledMuiIDItemsDic tm_safeObjectForKey:muiID class:[UIView class]];
+        view = [_recycledMuiIDItemsDic tm_safeObjectForKey:muiID class:[UIView class]];
         if (view && view.reuseIdentifier.length > 0 && [view.reuseIdentifier isEqualToString:identifier])
         {
             NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:identifier];
             if (muiID && [muiID isKindOfClass:[NSString class]] && muiID.length > 0) {
-                [self.recycledMuiIDItemsDic removeObjectForKey:muiID];
+                [_recycledMuiIDItemsDic removeObjectForKey:muiID];
             }
             [recycledIdentifierSet removeObject:view];
             view.gestureRecognizers = nil;
@@ -605,7 +587,7 @@
         if (view && view.reuseIdentifier.length > 0) {
             // If exist reusable view, remove it from recycledSet and recycledMuiIDItemsDic.
             if (view.muiID && [view.muiID isKindOfClass:[NSString class]] && view.muiID.length > 0) {
-                [self.recycledMuiIDItemsDic removeObjectForKey:view.muiID];
+                [_recycledMuiIDItemsDic removeObjectForKey:view.muiID];
             }
             [recycledIdentifierSet removeObject:view];
             // Then remove all gesture recognizers of it.
@@ -637,8 +619,8 @@
 
 - (void)resetViewEnterTimes
 {
-    [self.enterDict removeAllObjects];
-    self.lastVisibleMuiID = nil;
+    [_enterDic removeAllObjects];
+    _lastVisibleMuiID = nil;
 }
 
 @end
@@ -651,10 +633,10 @@
     {
         CGPoint newPoint = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
         CGFloat buffer = RenderBufferWindow / 2;
-        if (buffer < ABS(newPoint.y - self.lazyScrollView.lastScrollOffset.y)) {
-            self.lazyScrollView.lastScrollOffset = newPoint;
-            [self.lazyScrollView assembleSubviews];
-            [self.lazyScrollView findViewsInVisibleRect];
+        if (buffer < ABS(newPoint.y - _lazyScrollView->_lastScrollOffset.y)) {
+            _lazyScrollView->_lastScrollOffset = newPoint;
+            [_lazyScrollView assembleSubviews];
+            [_lazyScrollView findViewsInVisibleRect];
         }
     }
 }
