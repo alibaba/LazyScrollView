@@ -539,7 +539,7 @@
         }
         else{
             CGRect visibleBounds = self.bounds;
-            // 上下增加200像素的缓冲区
+            // 上下增加 20point 的缓冲区
             CGFloat minY = CGRectGetMinY(visibleBounds) - RenderBufferWindow;
             CGFloat maxY = CGRectGetMaxY(visibleBounds) + RenderBufferWindow;
             [self assembleSubviewsForReload:YES minY:minY maxY:maxY];
