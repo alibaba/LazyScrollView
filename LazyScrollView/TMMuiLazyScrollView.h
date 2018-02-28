@@ -63,10 +63,10 @@
 @property (nonatomic, assign) BOOL autoAddSubview;
 
 // Items which has been added to LazyScrollView.
-@property (nonatomic, strong, readonly, nonnull) NSSet *visibleItems;
+@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *visibleItems;
 // Items which is in the visible screen area.
 // It is a sub set of "visibleItems".
-@property (nonatomic, strong, readonly, nonnull) NSSet *inScreenVisibleItems;
+@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *inScreenVisibleItems;
 // Tangram can be footerView for TableView, this outerScrollView is your tableview.
 @property (nonatomic, weak, nullable) UIScrollView *outerScrollView;
 
