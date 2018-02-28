@@ -5,49 +5,6 @@
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreGraphics/CoreGraphics.h>
-
-@interface NSArray (TMSafeUtils)
-
-- (id)tm_safeObjectAtIndex:(NSUInteger)index;
-- (id)tm_safeObjectAtIndex:(NSUInteger)index class:(Class)aClass;
-
-- (bool)tm_boolAtIndex:(NSUInteger)index;
-- (CGFloat)tm_floatAtIndex:(NSUInteger)index;
-- (NSInteger)tm_integerAtIndex:(NSUInteger)index;
-- (NSString *)tm_stringAtIndex:(NSUInteger)index;
-- (NSDictionary *)tm_dictionaryAtIndex:(NSUInteger)index;
-- (NSArray *)tm_arrayAtIndex:(NSUInteger)index;
-
-@end
-
-@interface NSMutableArray (TMSafeUtils)
-
-- (void)tm_safeAddObject:(id)anObject;
-- (void)tm_safeInsertObject:(id)anObject atIndex:(NSUInteger)index;
-
-@end
-
-@interface NSDictionary (TMSafeUtils)
-
-- (id)tm_safeObjectForKey:(id)key;
-- (id)tm_safeObjectForKey:(id)key class:(Class)aClass;
-
-- (bool)tm_boolForKey:(id)key;
-- (CGFloat)tm_floatForKey:(id)key;
-- (NSInteger)tm_integerForKey:(id)key;
-- (NSString *)tm_stringForKey:(id)key;
-- (NSDictionary *)tm_dictionaryForKey:(id)key;
-- (NSArray *)tm_arrayForKey:(id)key;
-
-- (id)tm_safeValueForKey:(NSString *)key;
-- (void)tm_safeSetValue:(id)value forKey:(NSString *)key;
-
-@end
-
-@interface NSMutableDictionary (TMSafeUtils)
-
-- (void)tm_safeSetObject:(id)anObject forKey:(id)key;
-
-@end
+#import "NSString+TMSafeUtils.h"
+#import "NSArray+TMSafeUtils.h"
+#import "NSDictionary+TMSafeUtils.h"
