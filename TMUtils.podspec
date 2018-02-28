@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license      = {:type => 'MIT'}
   s.author       = { "HarrisonXi" => "gpra8764@gmail.com" }
   s.platform     = :ios
-  s.ios.deployment_target = "5.0"
+  s.ios.deployment_target = "7.0"
   s.source       = { :git => "https://github.com/alibaba/LazyScrollView.git", :tag => "1.0.0" }
   s.source_files = "TMUtils/*.{h,m}"
   s.requires_arc = true

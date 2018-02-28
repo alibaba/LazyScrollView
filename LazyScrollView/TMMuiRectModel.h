@@ -2,7 +2,7 @@
 //  TMMuiRectModel.h
 //  LazyScrollView
 //
-//  Copyright (c) 2017 Alibaba. All rights reserved.
+//  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
