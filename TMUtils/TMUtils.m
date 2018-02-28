@@ -7,7 +7,7 @@
 
 #import "TMUtils.h"
 
-@implementation NSArray (TMUtil)
+@implementation NSArray (TMSafeUtils)
 
 - (id)tm_safeObjectAtIndex:(NSUInteger)index
 {
@@ -74,7 +74,7 @@
 
 @end
 
-@implementation NSMutableArray (TMUtil)
+@implementation NSMutableArray (TMSafeUtils)
 
 - (void)tm_safeAddObject:(id)anObject
 {
@@ -92,7 +92,7 @@
 
 @end
 
-@implementation NSDictionary (TMUtil)
+@implementation NSDictionary (TMSafeUtils)
 
 - (id)tm_safeObjectForKey:(id)key
 {
@@ -171,7 +171,7 @@
 
 @end
 
-@implementation NSMutableDictionary (TMUtil)
+@implementation NSMutableDictionary (TMSafeUtils)
 
 - (void)tm_safeSetObject:(id)anObject forKey:(id)key
 {

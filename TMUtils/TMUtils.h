@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-@interface NSArray (TMUtil)
+@interface NSArray (TMSafeUtils)
 
 - (id)tm_safeObjectAtIndex:(NSUInteger)index;
 - (id)tm_safeObjectAtIndex:(NSUInteger)index class:(Class)aClass;
@@ -22,14 +22,14 @@
 
 @end
 
-@interface NSMutableArray (TMUtil)
+@interface NSMutableArray (TMSafeUtils)
 
 - (void)tm_safeAddObject:(id)anObject;
 - (void)tm_safeInsertObject:(id)anObject atIndex:(NSUInteger)index;
 
 @end
 
-@interface NSDictionary (TMUtil)
+@interface NSDictionary (TMSafeUtils)
 
 - (id)tm_safeObjectForKey:(id)key;
 - (id)tm_safeObjectForKey:(id)key class:(Class)aClass;
@@ -46,7 +46,7 @@
 
 @end
 
-@interface NSMutableDictionary (TMUtil)
+@interface NSMutableDictionary (TMSafeUtils)
 
 - (void)tm_safeSetObject:(id)anObject forKey:(id)key;
 
