@@ -6,50 +6,36 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TMLazyItemViewProtocol.h"
-#import "TMLazyRectModel.h"
+#import "TMLazyItemModel.h"
 
 @class TMLazyScrollView;
 
-
-/**
- A UIView category required by LazyScrollView.
- */
-@interface UIView (TMLazyScrollView)
-
-// A uniq string that identify a view, require to
-// be same as muiID of the model.
-@property (nonatomic, copy, nullable) NSString *muiID;
-// A string used to identify a view that is reusable.
-@property (nonatomic, copy, nullable) NSString *reuseIdentifier;
-
-- (nonnull instancetype)initWithFrame:(CGRect)frame
-                      reuseIdentifier:(nullable NSString *)reuseIdentifier;
-
-@end
-
-//****************************************************************
-
-/**
- This protocol represents the data model object.
- */
 @protocol TMLazyScrollViewDataSource <NSObject>
 
 @required
 
-// 0 by default.
-- (NSUInteger)numberOfItemInScrollView:(nonnull TMLazyScrollView *)scrollView;
-// Return the view model by spcial index.
-- (nonnull TMLazyRectModel *)scrollView:(nonnull TMLazyScrollView *)scrollView
-                      rectModelAtIndex:(NSUInteger)index;
-// You should render the item view here.
-// You should ALWAYS try to reuse views by setting each view's reuseIdentifier.
+/**
+ Similar with 'tableView:numberOfRowsInSection:' of UITableView.
+ */
+- (NSUInteger)numberOfItemsInScrollView:(nonnull TMLazyScrollView *)scrollView;
+
+/**
+ Similar with 'tableView:heightForRowAtIndexPath:' of UITableView.
+ Manager the correct muiID of item views will bring a higher performance.
+ */
+- (nonnull TMLazyItemModel *)scrollView:(nonnull TMLazyScrollView *)scrollView
+                       itemModelAtIndex:(NSUInteger)index;
+
+/**
+ Similar with 'tableView:cellForRowAtIndexPath:' of UITableView.
+ It will use muiID in item model instead of index.
+ */
 - (nonnull UIView *)scrollView:(nonnull TMLazyScrollView *)scrollView
                    itemByMuiID:(nonnull NSString *)muiID;
 
 @end
-//****************************************************************
 
+//****************************************************************
 
 @interface TMLazyScrollView : UIScrollView
 

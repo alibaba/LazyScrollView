@@ -6,8 +6,7 @@
 //
 
 #import "ViewController.h"
-#import <LazyScroll/TMLazyScrollView.h>
-
+#import <LazyScroll/LazyScroll.h>
 
 @interface LazyScrollViewCustomView : UILabel <TMLazyItemViewProtocol>
 
@@ -69,15 +68,15 @@
 }
 
 // STEP 2 implement datasource delegate.
-- (NSUInteger)numberOfItemInScrollView:(TMLazyScrollView *)scrollView
+- (NSUInteger)numberOfItemsInScrollView:(TMLazyScrollView *)scrollView
 {
     return rectArray.count;
 }
 
-- (TMLazyRectModel *)scrollView:(TMLazyScrollView *)scrollView rectModelAtIndex:(NSUInteger)index
+- (TMLazyItemModel *)scrollView:(TMLazyScrollView *)scrollView itemModelAtIndex:(NSUInteger)index
 {
     CGRect rect = [(NSValue *)[rectArray objectAtIndex:index] CGRectValue];
-    TMLazyRectModel *rectModel = [[TMLazyRectModel alloc] init];
+    TMLazyItemModel *rectModel = [[TMLazyItemModel alloc] init];
     rectModel.absRect = rect;
     rectModel.muiID = [NSString stringWithFormat:@"%zd", index];
     return rectModel;

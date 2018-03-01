@@ -7,51 +7,17 @@
 
 #import "TMLazyScrollView.h"
 #import <objc/runtime.h>
-#import <TMUtils/TMUtils.h>
+#import "TMLazyItemViewProtocol.h"
+#import "UIView+TMLazyScrollView.h"
 
 #define RenderBufferWindow 20.f
-
-
-@implementation UIView(TMLazyScrollView)
-
-- (instancetype)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier
-{
-    if (self = [self initWithFrame:frame]) {
-        self.reuseIdentifier = reuseIdentifier;
-    }
-    return self;
-}
-
-- (NSString *)reuseIdentifier
-{
-    return objc_getAssociatedObject(self, @"tm_reuseIdentifier");
-}
-
-- (void)setReuseIdentifier:(NSString *)reuseIdentifier
-{
-    objc_setAssociatedObject(self, @"tm_reuseIdentifier", reuseIdentifier, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (NSString *)muiID
-{
-    return objc_getAssociatedObject(self, @"tm_muiID");
-}
-
-- (void)setMuiID:(NSString *)muiID
-{
-    objc_setAssociatedObject(self, @"tm_muiID", muiID, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-@end
-
-//****************************************************************
 
 @interface TMLazyScrollView() <UIScrollViewDelegate> {
     NSMutableSet<UIView *> *_visibleItems;
     NSMutableSet<UIView *> *_inScreenVisibleItems;
     
-    // Store view models (TMLazyRectModel).
-    NSMutableArray<TMLazyRectModel *> *_itemsFrames;
+    // Store view models (TMLazyItemModel).
+    NSMutableArray<TMLazyItemModel *> *_itemsFrames;
     
     // Store reuseable cells by reuseIdentifier. The key is reuseIdentifier
     // of views , value is an array that contains reuseable cells.
@@ -65,9 +31,9 @@
     NSMutableSet<NSString *> *_secondSet;
     
     // View Model sorted by Top Edge.
-    NSArray<TMLazyRectModel *> *_modelsSortedByTop;
+    NSArray<TMLazyItemModel *> *_modelsSortedByTop;
     // View Model sorted by Bottom Edge.
-    NSArray<TMLazyRectModel *> *_modelsSortedByBottom;
+    NSArray<TMLazyItemModel *> *_modelsSortedByBottom;
     
     // It is used to store views need to assign new value after reload.
     NSMutableSet<NSString *> *_shouldReloadItems;
@@ -95,8 +61,6 @@
 }
 
 @end
-
-//****************************************************************
 
 @implementation TMLazyScrollView
 
@@ -252,12 +216,12 @@
     NSInteger max = frameArray.count - 1;
     NSInteger mid = ceilf((min + max) * 0.5f);
     while (mid > min && mid < max) {
-        CGRect rect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid] absRect];
+        CGRect rect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid] absRect];
         // For top
         if(fromTop) {
             CGFloat itemTop = CGRectGetMinY(rect);
             if (itemTop <= baseLine) {
-                CGRect nextItemRect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
+                CGRect nextItemRect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
                 CGFloat nextTop = CGRectGetMinY(nextItemRect);
                 if (nextTop > baseLine) {
                     break;
@@ -271,7 +235,7 @@
         else {
             CGFloat itemBottom = CGRectGetMaxY(rect);
             if (itemBottom >= baseLine) {
-                CGRect nextItemRect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
+                CGRect nextItemRect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
                 CGFloat nextBottom = CGRectGetMaxY(nextItemRect);
                 if (nextBottom < baseLine) {
                     break;
@@ -293,7 +257,7 @@
     NSUInteger endBottomIndex = [self binarySearchForIndex:_modelsSortedByBottom baseLine:startY isFromTop:NO];
     [_firstSet removeAllObjects];
     for (NSUInteger i = 0; i <= endBottomIndex; i++) {
-        TMLazyRectModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
+        TMLazyItemModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
         if (model != nil) {
             [_firstSet addObject:model.muiID];
         }
@@ -302,7 +266,7 @@
     NSUInteger endTopIndex = [self binarySearchForIndex:_modelsSortedByTop baseLine:endY isFromTop:YES];
     [_secondSet removeAllObjects];
     for (NSInteger i = 0; i <= endTopIndex; i++) {
-        TMLazyRectModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
+        TMLazyItemModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
         if (model != nil) {
             [_secondSet addObject:model.muiID];
         }
@@ -318,17 +282,17 @@
     NSUInteger count = 0;
     if (_dataSource &&
         [_dataSource conformsToProtocol:@protocol(TMLazyScrollViewDataSource)] &&
-        [_dataSource respondsToSelector:@selector(numberOfItemInScrollView:)]) {
-        count = [_dataSource numberOfItemInScrollView:self];
+        [_dataSource respondsToSelector:@selector(numberOfItemsInScrollView:)]) {
+        count = [_dataSource numberOfItemsInScrollView:self];
     }
     
     [_itemsFrames removeAllObjects];
     for (NSUInteger i = 0 ; i < count ; i++) {
-        TMLazyRectModel *rectmodel = nil;
+        TMLazyItemModel *rectmodel = nil;
         if (_dataSource &&
             [_dataSource conformsToProtocol:@protocol(TMLazyScrollViewDataSource)] &&
-            [_dataSource respondsToSelector:@selector(scrollView:rectModelAtIndex:)]) {
-            rectmodel = [_dataSource scrollView:self rectModelAtIndex:i];
+            [_dataSource respondsToSelector:@selector(scrollView:itemModelAtIndex:)]) {
+            rectmodel = [_dataSource scrollView:self itemModelAtIndex:i];
             if (rectmodel.muiID.length == 0) {
                 rectmodel.muiID = [NSString stringWithFormat:@"%lu", (unsigned long)i];
             }
@@ -337,8 +301,8 @@
     }
     
     _modelsSortedByTop = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-                                 CGRect rect1 = [(TMLazyRectModel *) obj1 absRect];
-                                 CGRect rect2 = [(TMLazyRectModel *) obj2 absRect];
+                                 CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
+                                 CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
                                  if (rect1.origin.y < rect2.origin.y) {
                                      return NSOrderedAscending;
                                  }  else if (rect1.origin.y > rect2.origin.y) {
@@ -349,8 +313,8 @@
                              }];
     
     _modelsSortedByBottom = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-                                    CGRect rect1 = [(TMLazyRectModel *) obj1 absRect];
-                                    CGRect rect2 = [(TMLazyRectModel *) obj2 absRect];
+                                    CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
+                                    CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
                                     CGFloat bottom1 = CGRectGetMaxY(rect1);
                                     CGFloat bottom2 = CGRectGetMaxY(rect2);
                                     if (bottom1 > bottom2) {
