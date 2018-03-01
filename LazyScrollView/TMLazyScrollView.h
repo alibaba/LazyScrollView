@@ -39,44 +39,63 @@
 
 @interface TMLazyScrollView : UIScrollView
 
-// 注意，修改 delegate 属性后需要将 scrollViewDidScroll: 事件转发回给 TangramView
-
 @property (nonatomic, weak, nullable) id<TMLazyScrollViewDataSource> dataSource;
 
-@property (nonatomic, weak, nullable) id<UIScrollViewDelegate> forwardingDelegate;
-
-// Default value is NO.
-@property (nonatomic, assign) BOOL autoAddSubview;
-
-// Items which has been added to LazyScrollView.
-@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *visibleItems;
-// Items which is in the visible screen area.
-// It is a sub set of "visibleItems".
-@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *inScreenVisibleItems;
-// Tangram can be footerView for TableView, this outerScrollView is your tableview.
+/**
+ LazyScrollView can be used as a subview of another ScrollView.
+ For example:
+ You can use LazyScrollView as footerView of TableView.
+ Then the outerScrollView should be that TableView.
+ */
 @property (nonatomic, weak, nullable) UIScrollView *outerScrollView;
 
+/**
+ If it is YES, LazyScrollView will add created item view into
+ its subviews automatically.
+ Default value is NO.
+ */
+@property (nonatomic, assign) BOOL autoAddSubview;
 
-// reloads everything from scratch and redisplays visible views.
+/**
+ Item views which is in the buffer area.
+ They will be shown soon.
+ */
+@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *visibleItems;
+
+/**
+ Item views which is in the screen visible area.
+ It is a sub set of "visibleItems".
+ */
+@property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *inScreenVisibleItems;
+
 - (void)reloadData;
-// Remove all subviews and reuseable views.
-- (void)removeAllLayouts;
 
-// Get reuseable view by reuseIdentifier. If cannot find reuseable
-// view by reuseIdentifier, here will return nil.
+/**
+ Get reuseable view by reuseIdentifier.
+ */
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier;
-// Get reuseable view by reuseIdentifier and muiID.
-// MuiID has higher priority.
+/**
+ Get reuseable view by reuseIdentifier and muiID.
+ MuiID has higher priority.
+ */
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier
                                                  muiID:(nullable NSString *)muiID;
 
-// After call this method, the times of mui_didEnterWithTimes will start from 0
-- (void)resetViewEnterTimes;
+- (void)clearItemViewsAndReusePool;
+- (void)removeAllLayouts __deprecated_msg("use clearItemViewsAndReusePool");
+
+/**
+ After call this method, the times of 'mui_didEnterWithTimes:' will start from 0.
+ */
+- (void)resetItemViewsEnterTimes;
+- (void)resetViewEnterTimes __deprecated_msg("use resetItemViewsEnterTimes");
 
 @end
 
 //****************************************************************
 
 @interface TMLazyScrollViewObserver: NSObject
+
 @property (nonatomic, weak, nullable) TMLazyScrollView *lazyScrollView;
+
 @end
