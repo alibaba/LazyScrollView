@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "TMLazyItemModel.h"
 
+@class TMLazyReusePool;
 @class TMLazyScrollView;
 
 @protocol TMLazyScrollViewDataSource <NSObject>
@@ -42,6 +43,11 @@
 @property (nonatomic, weak, nullable) id<TMLazyScrollViewDataSource> dataSource;
 
 /**
+ Used for managing reuseable item views.
+ */
+@property (nonatomic, strong, nonnull) TMLazyReusePool *reusePool;
+
+/**
  LazyScrollView can be used as a subview of another ScrollView.
  For example:
  You can use LazyScrollView as footerView of TableView.
@@ -71,24 +77,24 @@
 - (void)reloadData;
 
 /**
- Get reuseable view by reuseIdentifier.
+ Get reuseable item view by reuseIdentifier.
  */
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier;
 /**
- Get reuseable view by reuseIdentifier and muiID.
+ Get reuseable item view by reuseIdentifier and muiID.
  MuiID has higher priority.
  */
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier
                                                  muiID:(nullable NSString *)muiID;
 
-- (void)clearItemViewsAndReusePool;
-- (void)removeAllLayouts __deprecated_msg("use clearItemViewsAndReusePool");
+- (void)clearItemsAndReusePool;
+- (void)removeAllLayouts __deprecated_msg("use clearItemsAndReusePool");
 
 /**
  After call this method, the times of 'mui_didEnterWithTimes:' will start from 0.
  */
-- (void)resetItemViewsEnterTimes;
-- (void)resetViewEnterTimes __deprecated_msg("use resetItemViewsEnterTimes");
+- (void)resetItemsEnterTimes;
+- (void)resetViewEnterTimes __deprecated_msg("use resetItemsEnterTimes");
 
 @end
 

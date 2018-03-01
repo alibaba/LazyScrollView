@@ -152,5 +152,12 @@
     }
 }
 
+- (void)tm_safeRemoveObject:(id)anObject
+{
+    if (anObject != nil) {
+        [self removeObject:anObject];
+    }
+}
+
 @end
 

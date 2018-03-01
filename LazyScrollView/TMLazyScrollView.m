@@ -9,6 +9,7 @@
 #import <objc/runtime.h>
 #import "TMLazyItemViewProtocol.h"
 #import "UIView+TMLazyScrollView.h"
+#import "TMLazyReusePool.h"
 
 #define LazyBufferHeight 20.0
 #define LazyHalfBufferHeight (LazyBufferHeight / 2.0)
@@ -19,11 +20,6 @@
     
     // Store item models.
     NSMutableArray<TMLazyItemModel *> *_itemsFrames;
-    
-    // Store reuseable cells by reuseIdentifier.
-    NSMutableDictionary<NSString *, NSMutableSet<UIView *> *> *_recycledIdentifierItemsDic;
-    // Store reuseable cells by muiID.
-    NSMutableDictionary<NSString *, UIView *> *_recycledMuiIDItemsDic;
     
     // Store view models below contentOffset of ScrollView
     NSMutableSet<NSString *> *_firstSet;
@@ -109,8 +105,7 @@
         _modelsSortedByTop = [[NSArray alloc] init];
         _modelsSortedByBottom = [[NSArray alloc]init];
         
-        _recycledIdentifierItemsDic = [[NSMutableDictionary alloc] init];
-        _recycledMuiIDItemsDic = [[NSMutableDictionary alloc] init];
+        _reusePool = [TMLazyReusePool new];
         
         _visibleItems = [[NSMutableSet alloc] init];
         _inScreenVisibleItems = [[NSMutableSet alloc] init];
@@ -341,12 +336,9 @@
             // If this view should be recycled and the length of its reuseidentifier is over 0.
             if (view.reuseIdentifier.length > 0) {
                 // Then recycle the view.
-                NSMutableSet<UIView *> *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
-                [recycledIdentifierSet addObject:view];
+                [self.reusePool addItemView:view forReuseIdentifier:view.reuseIdentifier];
                 view.hidden = YES;
                 [recycledItems addObject:view];
-                // Also add to muiID recycle dict.
-                [_recycledMuiIDItemsDic tm_safeSetObject:view forKey:view.muiID];
             } else if(isReload && view.muiID) {
                 // Need to reload unreusable views.
                 [_shouldReloadItems addObject:view.muiID];
@@ -406,21 +398,6 @@
     }
 }
 
-// Get NSSet accroding to reuse identifier.
-- (NSMutableSet<UIView *> *)recycledIdentifierSet:(NSString *)reuseIdentifier;
-{
-    if (reuseIdentifier.length == 0) {
-        return nil;
-    }
-    
-    NSMutableSet<UIView *> *result = [_recycledIdentifierItemsDic tm_safeObjectForKey:reuseIdentifier];
-    if (result == nil) {
-        result = [[NSMutableSet alloc] init];
-        [_recycledIdentifierItemsDic setObject:result forKey:reuseIdentifier];
-    }
-    return result;
-}
-
 // Reloads everything and redisplays visible views.
 - (void)reloadData
 {
@@ -456,52 +433,30 @@
 // Use muiID for higher priority.
 - (UIView *)dequeueReusableItemWithIdentifier:(NSString *)identifier muiID:(NSString *)muiID
 {
-    UIView *view = nil;
-    
-    if (_currentVisibleItemMuiID) {
-        NSSet *visibles = _visibleItems;
-        for (UIView *v in visibles) {
-            if ([v.muiID isEqualToString:_currentVisibleItemMuiID] && [v.reuseIdentifier isEqualToString:identifier]) {
-                view = v;
-                break;
+    UIView *result = nil;
+    if (identifier && identifier.length > 0) {
+        if (_currentVisibleItemMuiID) {
+            for (UIView *item in _visibleItems) {
+                if ([item.muiID isEqualToString:_currentVisibleItemMuiID] && [item.reuseIdentifier isEqualToString:identifier]) {
+                    result = item;
+                    break;
+                }
             }
         }
-    } else if(muiID && [muiID isKindOfClass:[NSString class]] && muiID.length > 0) {
-        // Try to get reusable view from muiID dict.
-        view = [_recycledMuiIDItemsDic tm_safeObjectForKey:muiID class:[UIView class]];
-        if (view && view.reuseIdentifier.length > 0 && [view.reuseIdentifier isEqualToString:identifier])
-        {
-            NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:identifier];
-            if (muiID && [muiID isKindOfClass:[NSString class]] && muiID.length > 0) {
-                [_recycledMuiIDItemsDic removeObjectForKey:muiID];
+        if (result == nil && muiID && muiID.length > 0) {
+            result = [self.reusePool dequeueItemViewForReuseIdentifier:identifier andMuiID:muiID];
+        }
+        if (result == nil) {
+            result = [self.reusePool dequeueItemViewForReuseIdentifier:identifier];
+        }
+        if (result) {
+            result.gestureRecognizers = nil;
+            if ([result respondsToSelector:@selector(mui_prepareForReuse)]) {
+                [(id<TMLazyItemViewProtocol>)result mui_prepareForReuse];
             }
-            [recycledIdentifierSet removeObject:view];
-            view.gestureRecognizers = nil;
-        } else {
-            view = nil;
         }
     }
-
-    if (nil == view) {
-        NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:identifier];
-        view = [recycledIdentifierSet anyObject];
-        if (view && view.reuseIdentifier.length > 0) {
-            // If exist reusable view, remove it from recycledSet and recycledMuiIDItemsDic.
-            if (view.muiID && [view.muiID isKindOfClass:[NSString class]] && view.muiID.length > 0) {
-                [_recycledMuiIDItemsDic removeObjectForKey:view.muiID];
-            }
-            [recycledIdentifierSet removeObject:view];
-            // Then remove all gesture recognizers of it.
-            view.gestureRecognizers = nil;
-        } else {
-            view = nil;
-        }
-    }
-   
-    if ([view conformsToProtocol:@protocol(TMLazyItemViewProtocol)] && [view respondsToSelector:@selector(mui_prepareForReuse)]) {
-        [(UIView<TMLazyItemViewProtocol> *)view mui_prepareForReuse];
-    }
-    return view;
+    return result;
 }
 
 //Make sure whether the view is visible accroding to muiID.
@@ -518,25 +473,21 @@
     return result;
 }
 
-- (void)clearItemViewsAndReusePool
+- (void)clearItemsAndReusePool
 {
-    NSSet *visibles = _visibleItems;
-    for (UIView *view in visibles) {
-        NSMutableSet *recycledIdentifierSet = [self recycledIdentifierSet:view.reuseIdentifier];
-        [recycledIdentifierSet addObject:view];
+    for (UIView *view in _visibleItems) {
         view.hidden = YES;
     }
     [_visibleItems removeAllObjects];
-    [_recycledIdentifierItemsDic removeAllObjects];
-    [_recycledMuiIDItemsDic removeAllObjects];
+    [self.reusePool clear];
 }
 
 - (void)removeAllLayouts
 {
-    [self clearItemViewsAndReusePool];
+    [self clearItemsAndReusePool];
 }
 
-- (void)resetItemViewsEnterTimes
+- (void)resetItemsEnterTimes
 {
     [_enterDic removeAllObjects];
     _lastVisibleMuiID = nil;
@@ -544,7 +495,7 @@
 
 - (void)resetViewEnterTimes
 {
-    [self resetItemViewsEnterTimes];
+    [self resetItemsEnterTimes];
 }
 
 @end

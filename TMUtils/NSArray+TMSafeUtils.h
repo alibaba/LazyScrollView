@@ -33,5 +33,6 @@
 - (void)tm_safeInsertObject:(id)anObject atIndex:(NSUInteger)index;
 - (void)tm_safeReplaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject;
 - (void)tm_safeRemoveObjectAtIndex:(NSUInteger)index;
+- (void)tm_safeRemoveObject:(id)anObject;
 
 @end
