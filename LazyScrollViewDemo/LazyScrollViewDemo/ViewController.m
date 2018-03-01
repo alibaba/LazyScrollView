@@ -6,10 +6,10 @@
 //
 
 #import "ViewController.h"
-#import <LazyScroll/TMMuiLazyScrollView.h>
+#import <LazyScroll/TMLazyScrollView.h>
 
 
-@interface LazyScrollViewCustomView : UILabel <TMMuiLazyScrollViewCellProtocol>
+@interface LazyScrollViewCustomView : UILabel <TMLazyItemViewProtocol>
 
 @property (nonatomic, assign) NSUInteger reuseTimes;
 
@@ -25,7 +25,7 @@
 @end
 
 
-@interface ViewController () <TMMuiLazyScrollViewDataSource> {
+@interface ViewController () <TMLazyScrollViewDataSource> {
     NSMutableArray * rectArray;
 }
 
@@ -37,7 +37,7 @@
     [super viewDidLoad];
     
     // STEP 1 . Create LazyScrollView
-    TMMuiLazyScrollView *scrollview = [[TMMuiLazyScrollView alloc] init];
+    TMLazyScrollView *scrollview = [[TMLazyScrollView alloc] init];
     scrollview.frame = self.view.bounds;
     scrollview.dataSource = self;
     scrollview.autoAddSubview = YES;
@@ -69,21 +69,21 @@
 }
 
 // STEP 2 implement datasource delegate.
-- (NSUInteger)numberOfItemInScrollView:(TMMuiLazyScrollView *)scrollView
+- (NSUInteger)numberOfItemInScrollView:(TMLazyScrollView *)scrollView
 {
     return rectArray.count;
 }
 
-- (TMMuiRectModel *)scrollView:(TMMuiLazyScrollView *)scrollView rectModelAtIndex:(NSUInteger)index
+- (TMLazyRectModel *)scrollView:(TMLazyScrollView *)scrollView rectModelAtIndex:(NSUInteger)index
 {
     CGRect rect = [(NSValue *)[rectArray objectAtIndex:index] CGRectValue];
-    TMMuiRectModel *rectModel = [[TMMuiRectModel alloc] init];
+    TMLazyRectModel *rectModel = [[TMLazyRectModel alloc] init];
     rectModel.absRect = rect;
     rectModel.muiID = [NSString stringWithFormat:@"%zd", index];
     return rectModel;
 }
 
-- (UIView *)scrollView:(TMMuiLazyScrollView *)scrollView itemByMuiID:(NSString *)muiID
+- (UIView *)scrollView:(TMLazyScrollView *)scrollView itemByMuiID:(NSString *)muiID
 {
     // Find view that is reuseable first.
     LazyScrollViewCustomView *label = (LazyScrollViewCustomView *)[scrollView dequeueReusableItemWithIdentifier:@"testView"];

@@ -1,21 +1,21 @@
 //
-//  TMMuiLazyScrollView.h
+//  TMLazyScrollView.h
 //  LazyScrollView
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "TMMuiLazyScrollViewCellProtocol.h"
-#import "TMMuiRectModel.h"
+#import "TMLazyItemViewProtocol.h"
+#import "TMLazyRectModel.h"
 
-@class TMMuiLazyScrollView;
+@class TMLazyScrollView;
 
 
 /**
  A UIView category required by LazyScrollView.
  */
-@interface UIView (TMMuiLazyScrollView)
+@interface UIView (TMLazyScrollView)
 
 // A uniq string that identify a view, require to
 // be same as muiID of the model.
@@ -33,29 +33,29 @@
 /**
  This protocol represents the data model object.
  */
-@protocol TMMuiLazyScrollViewDataSource <NSObject>
+@protocol TMLazyScrollViewDataSource <NSObject>
 
 @required
 
 // 0 by default.
-- (NSUInteger)numberOfItemInScrollView:(nonnull TMMuiLazyScrollView *)scrollView;
+- (NSUInteger)numberOfItemInScrollView:(nonnull TMLazyScrollView *)scrollView;
 // Return the view model by spcial index.
-- (nonnull TMMuiRectModel *)scrollView:(nonnull TMMuiLazyScrollView *)scrollView
+- (nonnull TMLazyRectModel *)scrollView:(nonnull TMLazyScrollView *)scrollView
                       rectModelAtIndex:(NSUInteger)index;
 // You should render the item view here.
 // You should ALWAYS try to reuse views by setting each view's reuseIdentifier.
-- (nonnull UIView *)scrollView:(nonnull TMMuiLazyScrollView *)scrollView
+- (nonnull UIView *)scrollView:(nonnull TMLazyScrollView *)scrollView
                    itemByMuiID:(nonnull NSString *)muiID;
 
 @end
 //****************************************************************
 
 
-@interface TMMuiLazyScrollView : UIScrollView
+@interface TMLazyScrollView : UIScrollView
 
 // 注意，修改 delegate 属性后需要将 scrollViewDidScroll: 事件转发回给 TangramView
 
-@property (nonatomic, weak, nullable) id<TMMuiLazyScrollViewDataSource> dataSource;
+@property (nonatomic, weak, nullable) id<TMLazyScrollViewDataSource> dataSource;
 
 @property (nonatomic, weak, nullable) id<UIScrollViewDelegate> forwardingDelegate;
 
@@ -91,6 +91,6 @@
 
 //****************************************************************
 
-@interface TMMuiLazyScrollViewObserver: NSObject
-@property (nonatomic, weak, nullable) TMMuiLazyScrollView *lazyScrollView;
+@interface TMLazyScrollViewObserver: NSObject
+@property (nonatomic, weak, nullable) TMLazyScrollView *lazyScrollView;
 @end

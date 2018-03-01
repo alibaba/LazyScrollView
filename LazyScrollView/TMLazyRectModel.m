@@ -1,12 +1,12 @@
 //
-//  TMMuiRectModel.m
+//  TMLazyRectModel.m
 //  LazyScrollView
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
-#import "TMMuiRectModel.h"
+#import "TMLazyRectModel.h"
 
-@implementation TMMuiRectModel
+@implementation TMLazyRectModel
 
 @end

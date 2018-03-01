@@ -1,18 +1,18 @@
 //
-//  TMMuiLazyScrollView.m
+//  TMLazyScrollView.m
 //  LazyScrollView
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
-#import "TMMuiLazyScrollView.h"
+#import "TMLazyScrollView.h"
 #import <objc/runtime.h>
 #import <TMUtils/TMUtils.h>
 
 #define RenderBufferWindow 20.f
 
 
-@implementation UIView(TMMuiLazyScrollView)
+@implementation UIView(TMLazyScrollView)
 
 - (instancetype)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -46,12 +46,12 @@
 
 //****************************************************************
 
-@interface TMMuiLazyScrollView() <UIScrollViewDelegate> {
+@interface TMLazyScrollView() <UIScrollViewDelegate> {
     NSMutableSet<UIView *> *_visibleItems;
     NSMutableSet<UIView *> *_inScreenVisibleItems;
     
-    // Store view models (TMMuiRectModel).
-    NSMutableArray<TMMuiRectModel *> *_itemsFrames;
+    // Store view models (TMLazyRectModel).
+    NSMutableArray<TMLazyRectModel *> *_itemsFrames;
     
     // Store reuseable cells by reuseIdentifier. The key is reuseIdentifier
     // of views , value is an array that contains reuseable cells.
@@ -65,9 +65,9 @@
     NSMutableSet<NSString *> *_secondSet;
     
     // View Model sorted by Top Edge.
-    NSArray<TMMuiRectModel *> *_modelsSortedByTop;
+    NSArray<TMLazyRectModel *> *_modelsSortedByTop;
     // View Model sorted by Bottom Edge.
-    NSArray<TMMuiRectModel *> *_modelsSortedByBottom;
+    NSArray<TMLazyRectModel *> *_modelsSortedByBottom;
     
     // It is used to store views need to assign new value after reload.
     NSMutableSet<NSString *> *_shouldReloadItems;
@@ -84,7 +84,7 @@
     // Store last time visible muiID. Used for calc enter times.
     NSSet<NSString *> *_lastVisibleMuiID;
     
-    TMMuiLazyScrollViewObserver *_outerScrollViewObserver;
+    TMLazyScrollViewObserver *_outerScrollViewObserver;
     
     BOOL _forwardingDelegateCanPerformScrollViewDidScrollSelector;
     
@@ -98,7 +98,7 @@
 
 //****************************************************************
 
-@implementation TMMuiLazyScrollView
+@implementation TMLazyScrollView
 
 #pragma mark - Getter & Setter
 - (NSSet *)inScreenVisibleItems
@@ -122,7 +122,7 @@
 {
     _outerScrollView = outerScrollView;
     if (_outerScrollViewObserver == nil) {
-        _outerScrollViewObserver = [[TMMuiLazyScrollViewObserver alloc]init];
+        _outerScrollViewObserver = [[TMLazyScrollViewObserver alloc]init];
         _outerScrollViewObserver.lazyScrollView = self;
     }
     
@@ -252,12 +252,12 @@
     NSInteger max = frameArray.count - 1;
     NSInteger mid = ceilf((min + max) * 0.5f);
     while (mid > min && mid < max) {
-        CGRect rect = [(TMMuiRectModel *)[frameArray tm_safeObjectAtIndex:mid] absRect];
+        CGRect rect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid] absRect];
         // For top
         if(fromTop) {
             CGFloat itemTop = CGRectGetMinY(rect);
             if (itemTop <= baseLine) {
-                CGRect nextItemRect = [(TMMuiRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
+                CGRect nextItemRect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
                 CGFloat nextTop = CGRectGetMinY(nextItemRect);
                 if (nextTop > baseLine) {
                     break;
@@ -271,7 +271,7 @@
         else {
             CGFloat itemBottom = CGRectGetMaxY(rect);
             if (itemBottom >= baseLine) {
-                CGRect nextItemRect = [(TMMuiRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
+                CGRect nextItemRect = [(TMLazyRectModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
                 CGFloat nextBottom = CGRectGetMaxY(nextItemRect);
                 if (nextBottom < baseLine) {
                     break;
@@ -293,7 +293,7 @@
     NSUInteger endBottomIndex = [self binarySearchForIndex:_modelsSortedByBottom baseLine:startY isFromTop:NO];
     [_firstSet removeAllObjects];
     for (NSUInteger i = 0; i <= endBottomIndex; i++) {
-        TMMuiRectModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
+        TMLazyRectModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
         if (model != nil) {
             [_firstSet addObject:model.muiID];
         }
@@ -302,7 +302,7 @@
     NSUInteger endTopIndex = [self binarySearchForIndex:_modelsSortedByTop baseLine:endY isFromTop:YES];
     [_secondSet removeAllObjects];
     for (NSInteger i = 0; i <= endTopIndex; i++) {
-        TMMuiRectModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
+        TMLazyRectModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
         if (model != nil) {
             [_secondSet addObject:model.muiID];
         }
@@ -317,16 +317,16 @@
 {
     NSUInteger count = 0;
     if (_dataSource &&
-        [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+        [_dataSource conformsToProtocol:@protocol(TMLazyScrollViewDataSource)] &&
         [_dataSource respondsToSelector:@selector(numberOfItemInScrollView:)]) {
         count = [_dataSource numberOfItemInScrollView:self];
     }
     
     [_itemsFrames removeAllObjects];
     for (NSUInteger i = 0 ; i < count ; i++) {
-        TMMuiRectModel *rectmodel = nil;
+        TMLazyRectModel *rectmodel = nil;
         if (_dataSource &&
-            [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+            [_dataSource conformsToProtocol:@protocol(TMLazyScrollViewDataSource)] &&
             [_dataSource respondsToSelector:@selector(scrollView:rectModelAtIndex:)]) {
             rectmodel = [_dataSource scrollView:self rectModelAtIndex:i];
             if (rectmodel.muiID.length == 0) {
@@ -337,8 +337,8 @@
     }
     
     _modelsSortedByTop = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-                                 CGRect rect1 = [(TMMuiRectModel *) obj1 absRect];
-                                 CGRect rect2 = [(TMMuiRectModel *) obj2 absRect];
+                                 CGRect rect1 = [(TMLazyRectModel *) obj1 absRect];
+                                 CGRect rect2 = [(TMLazyRectModel *) obj2 absRect];
                                  if (rect1.origin.y < rect2.origin.y) {
                                      return NSOrderedAscending;
                                  }  else if (rect1.origin.y > rect2.origin.y) {
@@ -349,8 +349,8 @@
                              }];
     
     _modelsSortedByBottom = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-                                    CGRect rect1 = [(TMMuiRectModel *) obj1 absRect];
-                                    CGRect rect2 = [(TMMuiRectModel *) obj2 absRect];
+                                    CGRect rect1 = [(TMLazyRectModel *) obj1 absRect];
+                                    CGRect rect2 = [(TMLazyRectModel *) obj2 absRect];
                                     CGFloat bottom1 = CGRectGetMaxY(rect1);
                                     CGFloat bottom2 = CGRectGetMaxY(rect2);
                                     if (bottom1 > bottom2) {
@@ -369,7 +369,7 @@
     [itemViewSet minusSet:_lastVisibleMuiID];
     for (UIView *view in _visibleItems) {
         if (view && [itemViewSet containsObject:view.muiID]) {
-            if ([view conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] &&
+            if ([view conformsToProtocol:@protocol(TMLazyItemViewProtocol)] &&
                 [view respondsToSelector:@selector(mui_didEnterWithTimes:)]) {
                 NSUInteger times = 0;
                 if ([_enterDic tm_safeObjectForKey:view.muiID] != nil) {
@@ -377,7 +377,7 @@
                 }
                 NSNumber *showTimes = [NSNumber numberWithUnsignedInteger:times];
                 [_enterDic tm_safeSetObject:showTimes forKey:view.muiID];
-                [(UIView<TMMuiLazyScrollViewCellProtocol> *)view mui_didEnterWithTimes:times];
+                [(UIView<TMLazyItemViewProtocol> *)view mui_didEnterWithTimes:times];
             }
         }
     }
@@ -423,7 +423,7 @@
         BOOL isToShow  = [itemShouldShowSet containsObject:view.muiID];
         if (!isToShow) {
             if ([view respondsToSelector:@selector(mui_didLeave)]){
-                [(UIView<TMMuiLazyScrollViewCellProtocol> *)view mui_didLeave];
+                [(UIView<TMLazyItemViewProtocol> *)view mui_didLeave];
             }
             // If this view should be recycled and the length of its reuseidentifier is over 0.
             if (view.reuseIdentifier.length > 0) {
@@ -450,7 +450,7 @@
         BOOL shouldReload = isReload || [_shouldReloadItems containsObject:muiID];
         if (![self isCellVisible:muiID] || [_shouldReloadItems containsObject:muiID]) {
             if (_dataSource &&
-                [_dataSource conformsToProtocol:@protocol(TMMuiLazyScrollViewDataSource)] &&
+                [_dataSource conformsToProtocol:@protocol(TMLazyScrollViewDataSource)] &&
                 [_dataSource respondsToSelector:@selector(scrollView:itemByMuiID:)]) {
                 // Create view by dataSource.
                 // If you call dequeue method in your dataSource, the currentVisibleItemMuiID
@@ -461,9 +461,9 @@
                 UIView *viewToShow = [_dataSource scrollView:self itemByMuiID:muiID];
                 _currentVisibleItemMuiID = nil;
                 // Call afterGetView.
-                if ([viewToShow conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] &&
+                if ([viewToShow conformsToProtocol:@protocol(TMLazyItemViewProtocol)] &&
                     [viewToShow respondsToSelector:@selector(mui_afterGetView)]) {
-                    [(UIView<TMMuiLazyScrollViewCellProtocol> *)viewToShow mui_afterGetView];
+                    [(UIView<TMLazyItemViewProtocol> *)viewToShow mui_afterGetView];
                 }
                 if (viewToShow) {
                     viewToShow.muiID = muiID;
@@ -599,8 +599,8 @@
         }
     }
    
-    if ([view conformsToProtocol:@protocol(TMMuiLazyScrollViewCellProtocol)] && [view respondsToSelector:@selector(mui_prepareForReuse)]) {
-        [(UIView<TMMuiLazyScrollViewCellProtocol> *)view mui_prepareForReuse];
+    if ([view conformsToProtocol:@protocol(TMLazyItemViewProtocol)] && [view respondsToSelector:@selector(mui_prepareForReuse)]) {
+        [(UIView<TMLazyItemViewProtocol> *)view mui_prepareForReuse];
     }
     return view;
 }
@@ -627,7 +627,7 @@
 
 @end
 
-@implementation TMMuiLazyScrollViewObserver
+@implementation TMLazyScrollViewObserver
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {

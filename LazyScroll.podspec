@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/alibaba/LazyScrollView.git", :tag => "1.0.0" }
   s.source_files = "LazyScrollView/*.{h,m}"
   s.requires_arc = true
+  s.prefix_header_contents = '#import <TMUtils/TMUtils.h>'
 
   s.dependency 'TMUtils', '~> 1.0.0'
 

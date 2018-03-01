@@ -1,5 +1,5 @@
 //
-//  TMMuiLazyScrollViewCellProtocol.h
+//  TMLazyItemViewProtocol.h
 //  LazyScrollView
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
@@ -9,7 +9,7 @@
  If the view in LazyScrollView implement this protocol,
  view can do something in its lifecycle.
  */
-@protocol  TMMuiLazyScrollViewCellProtocol<NSObject>
+@protocol  TMLazyItemViewProtocol<NSObject>
 
 @optional
 // Will be called if call dequeueReusableItemWithIdentifier

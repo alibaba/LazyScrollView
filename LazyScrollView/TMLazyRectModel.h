@@ -1,5 +1,5 @@
 //
-//  TMMuiRectModel.h
+//  TMLazyRectModel.h
 //  LazyScrollView
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
@@ -11,7 +11,7 @@
  It is a view model that holding information of view.
  At least holding absRect and muiID.
  */
-@interface TMMuiRectModel : NSObject
+@interface TMLazyRectModel : NSObject
 
 // A rect that relative to the scroll view.
 @property (nonatomic,assign) CGRect absRect;
