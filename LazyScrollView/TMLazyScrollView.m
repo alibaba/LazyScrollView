@@ -13,13 +13,16 @@
 
 #define LazyBufferHeight 20.0
 #define LazyHalfBufferHeight (LazyBufferHeight / 2.0)
+void * const LazyObserverContext = "LazyObserverContext";
+
+@class TMLazyOuterScrollViewObserver;
 
 @interface TMLazyScrollView () {
     NSMutableSet<UIView *> *_visibleItems;
     NSMutableSet<UIView *> *_inScreenVisibleItems;
     
     // Store item models.
-    NSMutableArray<TMLazyItemModel *> *_itemsFrames;
+    NSMutableArray<TMLazyItemModel *> *_itemsModels;
     
     // Store view models below contentOffset of ScrollView
     NSMutableSet<NSString *> *_firstSet;
@@ -46,7 +49,7 @@
     // Store last time visible muiID. Used for calc enter times.
     NSSet<NSString *> *_lastVisibleMuiID;
     
-    TMLazyScrollViewObserver *_outerScrollViewObserver;
+    TMLazyOuterScrollViewObserver *_outerScrollViewObserver;
     
     BOOL _forwardingDelegateCanPerformScrollViewDidScrollSelector;
     
@@ -55,6 +58,8 @@
     // views to show
     CGPoint _lastScrollOffset;
 }
+
+- (void)outerScrollViewDidScroll;
 
 @end
 
@@ -74,27 +79,22 @@
 
 -(void)setOuterScrollView:(UIScrollView *)outerScrollView
 {
-    _outerScrollView = outerScrollView;
-    if (_outerScrollViewObserver == nil) {
-        _outerScrollViewObserver = [[TMLazyScrollViewObserver alloc]init];
-        _outerScrollViewObserver.lazyScrollView = self;
+    if (_outerScrollView != outerScrollView) {
+        if (_outerScrollView) {
+            [_outerScrollView removeObserver:self forKeyPath:@"contentOffset" context:LazyObserverContext];
+        }
+        if (outerScrollView) {
+            [outerScrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:LazyObserverContext];
+        }
+        _outerScrollView = outerScrollView;
     }
-    
-    @try {
-        [outerScrollView removeObserver:_outerScrollViewObserver forKeyPath:@"contentOffset"];
-    }
-    @catch (NSException * __unused exception) {}
-    [outerScrollView addObserver:_outerScrollViewObserver
-                      forKeyPath:@"contentOffset"
-                         options:NSKeyValueObservingOptionNew
-                         context:nil];
 }
 
 #pragma mark - Lifecycle
 
-- (id)initWithFrame:(CGRect)frame
+- (id)init
 {
-    if (self = [super initWithFrame:frame]) {
+    if (self = [super init]) {
         self.clipsToBounds = YES;
         self.autoresizesSubviews = NO;
         self.showsHorizontalScrollIndicator = NO;
@@ -110,7 +110,7 @@
         _visibleItems = [[NSMutableSet alloc] init];
         _inScreenVisibleItems = [[NSMutableSet alloc] init];
         
-        _itemsFrames = [[NSMutableArray alloc] init];
+        _itemsModels = [[NSMutableArray alloc] init];
         
         _firstSet = [[NSMutableSet alloc] initWithCapacity:30];
         _secondSet = [[NSMutableSet alloc] initWithCapacity:30];
@@ -124,14 +124,7 @@
 {
     _dataSource = nil;
     self.delegate = nil;
-    if (_outerScrollView) {
-        @try {
-            [_outerScrollView removeObserver:_outerScrollViewObserver forKeyPath:@"contentOffset"];
-        }
-        @catch (NSException *exception) {
-            
-        }
-    }
+    self.outerScrollView = nil;
 }
 
 #pragma mark - ScrollEvent
@@ -139,13 +132,24 @@
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     [super setContentOffset:contentOffset];
-    // Calculate which views should be shown.
-    // Calcuting will cost some time, so here is a buffer for reducing
+    // Calculate which item views should be shown.
+    // Calculating will cost some time, so here is a buffer for reducing
     // times of calculating.
     CGFloat currentY = contentOffset.y;
     CGFloat buffer = LazyHalfBufferHeight;
     if (buffer < ABS(currentY - _lastScrollOffset.y)) {
         _lastScrollOffset = self.contentOffset;
+        [self assembleSubviews];
+        [self findViewsInVisibleRect];
+    }
+}
+
+- (void)outerScrollViewDidScroll
+{
+    CGFloat currentY = _outerScrollView.contentOffset.y;
+    CGFloat buffer = LazyHalfBufferHeight;
+    if (buffer < ABS(currentY - _lastScrollOffset.y)) {
+        _lastScrollOffset = _outerScrollView.contentOffset;
         [self assembleSubviews];
         [self findViewsInVisibleRect];
     }
@@ -230,7 +234,7 @@
         count = [_dataSource numberOfItemsInScrollView:self];
     }
     
-    [_itemsFrames removeAllObjects];
+    [_itemsModels removeAllObjects];
     for (NSUInteger i = 0 ; i < count ; i++) {
         TMLazyItemModel *rectmodel = nil;
         if (_dataSource &&
@@ -241,10 +245,10 @@
                 rectmodel.muiID = [NSString stringWithFormat:@"%lu", (unsigned long)i];
             }
         }
-        [_itemsFrames tm_safeAddObject:rectmodel];
+        [_itemsModels tm_safeAddObject:rectmodel];
     }
     
-    _modelsSortedByTop = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
+    _modelsSortedByTop = [_itemsModels sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
                                  CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
                                  CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
                                  if (rect1.origin.y < rect2.origin.y) {
@@ -256,7 +260,7 @@
                                  }
                              }];
     
-    _modelsSortedByBottom = [_itemsFrames sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
+    _modelsSortedByBottom = [_itemsModels sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
                                     CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
                                     CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
                                     CGFloat bottom1 = CGRectGetMaxY(rect1);
@@ -402,7 +406,7 @@
 - (void)reloadData
 {
     [self creatScrollViewIndex];
-    if (_itemsFrames.count > 0) {
+    if (_itemsModels.count > 0) {
         if (_outerScrollView) {
             CGRect rectInScrollView = [self convertRect:self.frame toView:_outerScrollView];
             CGFloat minY = _outerScrollView.contentOffset.y - rectInScrollView.origin.y - LazyBufferHeight;
@@ -500,22 +504,21 @@
 
 @end
 
-@implementation TMLazyScrollViewObserver
+//****************************************************************
+
+@interface TMLazyOuterScrollViewObserver: NSObject
+
+@property (nonatomic, weak) TMLazyScrollView *lazyScrollView;
+
+@end
+
+@implementation TMLazyOuterScrollViewObserver
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"contentOffset"])
-    {
-        CGPoint newPoint = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
-        CGFloat buffer = LazyHalfBufferHeight;
-        if (buffer < ABS(newPoint.y - _lazyScrollView->_lastScrollOffset.y)) {
-            _lazyScrollView->_lastScrollOffset = newPoint;
-            [_lazyScrollView assembleSubviews];
-            [_lazyScrollView findViewsInVisibleRect];
-        }
+    if (context == LazyObserverContext && [keyPath isEqualToString:@"contentOffset"] && _lazyScrollView) {
+        [_lazyScrollView outerScrollViewDidScroll];
     }
 }
 
 @end
-
-

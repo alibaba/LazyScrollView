@@ -97,11 +97,3 @@
 - (void)resetViewEnterTimes __deprecated_msg("use resetItemsEnterTimes");
 
 @end
-
-//****************************************************************
-
-@interface TMLazyScrollViewObserver: NSObject
-
-@property (nonatomic, weak, nullable) TMLazyScrollView *lazyScrollView;
-
-@end
