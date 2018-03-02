@@ -52,6 +52,7 @@
  For example:
  You can use LazyScrollView as footerView of TableView.
  Then the outerScrollView should be that TableView.
+ You MUST set this property to nil before the outerScrollView's dealloc.
  */
 @property (nonatomic, weak, nullable) UIScrollView *outerScrollView;
 

@@ -96,6 +96,8 @@
     [scrollview addSubview:tipLabel];
 }
 
+#pragma mark LazyScrollView
+
 // STEP 2: implement datasource.
 - (NSUInteger)numberOfItemsInScrollView:(TMLazyScrollView *)scrollView
 {
@@ -133,7 +135,7 @@
     return label;
 }
 
-#pragma mark - Private
+#pragma mark Private
 
 - (void)addRect:(CGRect)newRect andUpdateMaxY:(CGFloat *)maxY
 {

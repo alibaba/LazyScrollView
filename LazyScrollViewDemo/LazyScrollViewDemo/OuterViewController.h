@@ -7,6 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OuterViewController : UIViewController
+@interface OuterViewController : UITableViewController
 
 @end

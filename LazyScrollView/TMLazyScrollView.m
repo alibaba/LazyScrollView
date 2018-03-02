@@ -15,7 +15,13 @@
 #define LazyHalfBufferHeight (LazyBufferHeight / 2.0)
 void * const LazyObserverContext = "LazyObserverContext";
 
-@class TMLazyOuterScrollViewObserver;
+@interface TMLazyOuterScrollViewObserver: NSObject
+
+@property (nonatomic, weak) TMLazyScrollView *lazyScrollView;
+
+@end
+
+//****************************************************************
 
 @interface TMLazyScrollView () {
     NSMutableSet<UIView *> *_visibleItems;
@@ -49,8 +55,6 @@ void * const LazyObserverContext = "LazyObserverContext";
     // Store last time visible muiID. Used for calc enter times.
     NSSet<NSString *> *_lastVisibleMuiID;
     
-    TMLazyOuterScrollViewObserver *_outerScrollViewObserver;
-    
     BOOL _forwardingDelegateCanPerformScrollViewDidScrollSelector;
     
     @package
@@ -59,13 +63,15 @@ void * const LazyObserverContext = "LazyObserverContext";
     CGPoint _lastScrollOffset;
 }
 
+@property (nonatomic, strong) TMLazyOuterScrollViewObserver *outerScrollViewObserver;
+
 - (void)outerScrollViewDidScroll;
 
 @end
 
 @implementation TMLazyScrollView
 
-#pragma mark - Getter & Setter
+#pragma mark Getter & Setter
 
 - (NSSet *)inScreenVisibleItems
 {
@@ -77,20 +83,29 @@ void * const LazyObserverContext = "LazyObserverContext";
     return [_visibleItems copy];
 }
 
+- (TMLazyOuterScrollViewObserver *)outerScrollViewObserver
+{
+    if (!_outerScrollViewObserver) {
+        _outerScrollViewObserver = [TMLazyOuterScrollViewObserver new];
+        _outerScrollViewObserver.lazyScrollView = self;
+    }
+    return _outerScrollViewObserver;
+}
+
 -(void)setOuterScrollView:(UIScrollView *)outerScrollView
 {
     if (_outerScrollView != outerScrollView) {
         if (_outerScrollView) {
-            [_outerScrollView removeObserver:self forKeyPath:@"contentOffset" context:LazyObserverContext];
+            [_outerScrollView removeObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset" context:LazyObserverContext];
         }
         if (outerScrollView) {
-            [outerScrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:LazyObserverContext];
+            [outerScrollView addObserver:self.outerScrollViewObserver forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:LazyObserverContext];
         }
         _outerScrollView = outerScrollView;
     }
 }
 
-#pragma mark - Lifecycle
+#pragma mark Lifecycle
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -127,7 +142,7 @@ void * const LazyObserverContext = "LazyObserverContext";
     self.outerScrollView = nil;
 }
 
-#pragma mark - ScrollEvent
+#pragma mark ScrollEvent
 
 - (void)setContentOffset:(CGPoint)contentOffset
 {
@@ -155,7 +170,7 @@ void * const LazyObserverContext = "LazyObserverContext";
     }
 }
 
-#pragma mark - Core Logic
+#pragma mark Core Logic
 
 // Do Binary search here to find index in view model array.
 - (NSUInteger)binarySearchForIndex:(NSArray *)frameArray baseLine:(CGFloat)baseLine isFromTop:(BOOL)fromTop
@@ -505,12 +520,6 @@ void * const LazyObserverContext = "LazyObserverContext";
 @end
 
 //****************************************************************
-
-@interface TMLazyOuterScrollViewObserver: NSObject
-
-@property (nonatomic, weak) TMLazyScrollView *lazyScrollView;
-
-@end
 
 @implementation TMLazyOuterScrollViewObserver
 
