@@ -92,9 +92,9 @@ void * const LazyObserverContext = "LazyObserverContext";
 
 #pragma mark - Lifecycle
 
-- (id)init
+- (id)initWithFrame:(CGRect)frame
 {
-    if (self = [super init]) {
+    if (self = [super initWithFrame:frame]) {
         self.clipsToBounds = YES;
         self.autoresizesSubviews = NO;
         self.showsHorizontalScrollIndicator = NO;

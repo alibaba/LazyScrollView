@@ -6,14 +6,14 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "MainViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[MainViewController new]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
