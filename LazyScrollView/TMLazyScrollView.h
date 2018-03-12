@@ -60,8 +60,16 @@
  If it is YES, LazyScrollView will add created item view into
  its subviews automatically.
  Default value is NO.
+ Please only set this value before you reload data for the first time.
  */
 @property (nonatomic, assign) BOOL autoAddSubview;
+
+/**
+ If it is YES, LazyScrollView will clear all gestures for item view before
+ reusing it.
+ Default value is YES.
+ */
+@property (nonatomic, assign) BOOL autoClearGestures;
 
 /**
  Item views which is in the buffer area.

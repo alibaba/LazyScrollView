@@ -11,8 +11,8 @@
 #import "UIView+TMLazyScrollView.h"
 #import "TMLazyReusePool.h"
 
-#define LazyBufferHeight 20.0
-#define LazyHalfBufferHeight (LazyBufferHeight / 2.0)
+#define LazyBufferHeight 30.0
+#define LazyHalfBufferHeight 15.0
 void * const LazyObserverContext = "LazyObserverContext";
 
 @interface TMLazyOuterScrollViewObserver: NSObject
@@ -469,7 +469,9 @@ void * const LazyObserverContext = "LazyObserverContext";
             result = [self.reusePool dequeueItemViewForReuseIdentifier:identifier];
         }
         if (result) {
+            if (self.autoClearGestures) {
             result.gestureRecognizers = nil;
+            }
             if ([result respondsToSelector:@selector(mui_prepareForReuse)]) {
                 [(id<TMLazyItemViewProtocol>)result mui_prepareForReuse];
             }
