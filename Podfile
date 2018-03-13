@@ -9,4 +9,11 @@ target 'LazyScrollViewDemo' do
     pod 'TMUtils', :path => './'
 end
 
+target 'LazyScrollViewTest' do
+    project 'LazyScrollViewTest/LazyScrollViewTest.xcodeproj'
+    pod 'LazyScroll', :path => './'
+    pod 'TMUtils', :path => './'
+    pod 'OCHamcrest'
+end
+
 workspace 'LazyScrollView'
