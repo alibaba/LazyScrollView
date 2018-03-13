@@ -52,7 +52,6 @@
     if (reuseSet && reuseSet.count > 0) {
         if (!muiID) {
             result = [reuseSet anyObject];
-            [reuseSet removeObject:result];
         } else {
             for (UIView *itemView in reuseSet) {
                 if ([itemView.muiID isEqualToString:muiID]) {
@@ -60,10 +59,11 @@
                     break;
                 }
             }
-            if (result) {
-                [reuseSet removeObject:result];
+            if (!result) {
+                result = [reuseSet anyObject];
             }
         }
+        [reuseSet removeObject:result];
     }
     return result;
 }
