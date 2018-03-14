@@ -11,6 +11,7 @@
 #import "TMLazyItemViewProtocol.h"
 #import "TMLazyItemModel.h"
 #import "TMLazyReusePool.h"
+#import "TMLazyModelBucket.h"
 #import "UIView+TMLazyScrollView.h"
 #import "TMLazyScrollView.h"
 

@@ -163,7 +163,7 @@ void * const LazyObserverContext = "LazyObserverContext";
     [super setContentOffset:contentOffset];
     if (LazyBufferHeight < ABS(contentOffset.y - _lastContentOffset.y)) {
         _lastContentOffset = self.contentOffset;
-        [self assembleSubviews];
+        [self assembleSubviews:NO];
     }
 }
 
@@ -171,13 +171,13 @@ void * const LazyObserverContext = "LazyObserverContext";
 {
     if (LazyBufferHeight < ABS(self.outerScrollView.contentOffset.y - _lastContentOffset.y)) {
         _lastContentOffset = self.outerScrollView.contentOffset;
-        [self assembleSubviews];
+        [self assembleSubviews:NO];
     }
 }
 
 #pragma mark CoreLogic
 
-- (void)assembleSubviews
+- (void)assembleSubviews:(BOOL)isReload
 {
     if (self.outerScrollView) {
         CGRect visibleArea = CGRectIntersection(self.outerScrollView.bounds, self.frame);
@@ -185,12 +185,14 @@ void * const LazyObserverContext = "LazyObserverContext";
             CGFloat offsetY = CGRectGetMinY(self.frame);
             CGFloat minY = CGRectGetMinY(visibleArea) - offsetY;
             CGFloat maxY = CGRectGetMaxY(visibleArea) - offsetY;
-            [self assembleSubviews:NO minY:minY maxY:maxY];
+            [self assembleSubviews:isReload minY:minY maxY:maxY];
+        } else {
+            [self assembleSubviews:isReload minY:0 maxY:-LazyBufferHeight * 2];
         }
     } else {
         CGFloat minY = CGRectGetMinY(self.bounds);
         CGFloat maxY = CGRectGetMaxY(self.bounds);
-        [self assembleSubviews:NO minY:minY maxY:maxY];
+        [self assembleSubviews:isReload minY:minY maxY:maxY];
     }
 }
 
@@ -402,26 +404,12 @@ void * const LazyObserverContext = "LazyObserverContext";
     }];
 }
 
+#pragma mark Reload
+
 - (void)reloadData
 {
     [self creatScrollViewIndex];
-    if (_itemModels.count > 0) {
-        if (self.outerScrollView) {
-            CGRect rectInScrollView = [self convertRect:self.frame toView:self.outerScrollView];
-            CGFloat minY = self.outerScrollView.contentOffset.y - rectInScrollView.origin.y;
-            CGFloat maxY = self.outerScrollView.contentOffset.y + self.outerScrollView.frame.size.height - rectInScrollView.origin.y + self.outerScrollView.frame.size.height;
-            if (maxY > 0) {
-                [self assembleSubviews:YES minY:minY maxY:maxY];
-            }
-        }
-        else{
-            CGRect visibleBounds = self.bounds;
-            // 上下增加 20point 的缓冲区
-            CGFloat minY = CGRectGetMinY(visibleBounds);
-            CGFloat maxY = CGRectGetMaxY(visibleBounds);
-            [self assembleSubviews:YES minY:minY maxY:maxY];
-        }
-    }
+    [self assembleSubviews:YES];
 }
 
 - (UIView *)dequeueReusableItemWithIdentifier:(NSString *)identifier
@@ -462,8 +450,10 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (void)clearVisibleItems
 {
     for (UIView *itemView in _visibleItems) {
-        itemView.hidden = YES;
-        [self.reusePool addItemView:itemView forReuseIdentifier:itemView.reuseIdentifier];
+        if (itemView.reuseIdentifier.length > 0) {
+            itemView.hidden = YES;
+            [self.reusePool addItemView:itemView forReuseIdentifier:itemView.reuseIdentifier];
+        }
     }
     [_visibleItems removeAllObjects];
 }

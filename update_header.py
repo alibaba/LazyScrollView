@@ -28,5 +28,6 @@ def updateHeader(DIR, PROJ):
 
 updateHeader(os.path.join(sys.path[0], 'LazyScrollView'), 'LazyScrollView')
 updateHeader(os.path.join(sys.path[0], 'LazyScrollViewDemo'), 'LazyScrollViewDemo')
+updateHeader(os.path.join(sys.path[0], 'LazyScrollViewTest'), 'LazyScrollViewTest')
 updateHeader(os.path.join(sys.path[0], 'TMUtils'), 'TMUtils')
 print('Header updating is done.')

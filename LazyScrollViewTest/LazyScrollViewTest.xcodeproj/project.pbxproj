@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		53E176C0B4093753A77EF855 /* libPods-LazyScrollViewTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ED7BF79578DE1BA510C818B /* libPods-LazyScrollViewTest.a */; };
-		92AED9EE2057C57C00E4D744 /* LazyScrollViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 92AED9ED2057C57C00E4D744 /* LazyScrollViewTest.m */; };
+		92AED9EE2057C57C00E4D744 /* ModelBucketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8ED7BF79578DE1BA510C818B /* libPods-LazyScrollViewTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LazyScrollViewTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		92AED9EA2057C57C00E4D744 /* LazyScrollViewTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LazyScrollViewTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		92AED9ED2057C57C00E4D744 /* LazyScrollViewTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LazyScrollViewTest.m; sourceTree = "<group>"; };
+		92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelBucketTest.m; sourceTree = "<group>"; };
 		92AED9EF2057C57C00E4D744 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5607E29605A5026A43D96A6 /* Pods-LazyScrollViewTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewTest.release.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest.release.xcconfig"; sourceTree = "<group>"; };
 		FCC6B3D1BF91291A7E8BDAF5 /* Pods-LazyScrollViewTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewTest.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest.debug.xcconfig"; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 		92AED9EC2057C57C00E4D744 /* LazyScrollViewTest */ = {
 			isa = PBXGroup;
 			children = (
-				92AED9ED2057C57C00E4D744 /* LazyScrollViewTest.m */,
+				92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */,
 				92AED9EF2057C57C00E4D744 /* Info.plist */,
 			);
 			path = LazyScrollViewTest;
@@ -196,7 +196,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92AED9EE2057C57C00E4D744 /* LazyScrollViewTest.m in Sources */,
+				92AED9EE2057C57C00E4D744 /* ModelBucketTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
