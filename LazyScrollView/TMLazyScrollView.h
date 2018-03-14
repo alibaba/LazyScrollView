@@ -84,6 +84,7 @@
 @property (nonatomic, strong, readonly, nonnull) NSSet<UIView *> *inScreenVisibleItems;
 
 - (void)reloadData;
+- (void)loadMoreDataFromIndex:(NSInteger)index;
 
 /**
  Get reuseable item view by reuseIdentifier.

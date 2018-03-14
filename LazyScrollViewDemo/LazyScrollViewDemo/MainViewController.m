@@ -7,6 +7,7 @@
 
 #import "MainViewController.h"
 #import "OuterViewController.h"
+#import "MoreViewController.h"
 
 @interface MainViewController ()
 
@@ -20,7 +21,7 @@
 {
     if (self = [super init]) {
         self.title = @"LazyScrollDemo";
-        self.demoArray = @[@"Reuse", @"OuterScrollView"];
+        self.demoArray = @[@"Reuse", @"OuterScrollView", @"LoadMore"];
     }
     return self;
 }
@@ -46,6 +47,8 @@
     UIViewController *vc;
     if ([demoName isEqualToString:@"OuterScrollView"]) {
         vc = [OuterViewController new];
+    } else if ([demoName isEqualToString:@"LoadMore"]) {
+        vc = [MoreViewController new];
     } else {
         Class demoVcClass = NSClassFromString([demoName stringByAppendingString:@"ViewController"]);
         vc = [demoVcClass new];

@@ -47,10 +47,10 @@
     [super viewDidLoad];
 
     // STEP 1: Create LazyScrollView
-    TMLazyScrollView *scrollview = [[TMLazyScrollView alloc] initWithFrame:self.view.bounds];
-    scrollview.dataSource = self;
-    scrollview.autoAddSubview = YES;
-    [self.view addSubview:scrollview];
+    TMLazyScrollView *scrollView = [[TMLazyScrollView alloc] initWithFrame:self.view.bounds];
+    scrollView.dataSource = self;
+    scrollView.autoAddSubview = YES;
+    [self.view addSubview:scrollView];
     
     // Here is frame array for test.
     // LazyScrollView must know item view's frame before rending.
@@ -85,15 +85,15 @@
     }
     
     // STEP 3: reload LazyScrollView
-    scrollview.contentSize = CGSizeMake(viewWidth, maxY + 10);
-    [scrollview reloadData];
+    scrollView.contentSize = CGSizeMake(viewWidth, maxY + 10);
+    [scrollView reloadData];
     
     // A tip.
     UILabel *tipLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, viewWidth - 20, 30)];
     tipLabel.font = [UIFont systemFontOfSize:12];
     tipLabel.numberOfLines = 0;
     tipLabel.text = @"Item views's color should be from red to blue. They are reused. Magenta should not be appeared.";
-    [scrollview addSubview:tipLabel];
+    [scrollView addSubview:tipLabel];
 }
 
 #pragma mark LazyScrollView

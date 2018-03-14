@@ -280,12 +280,14 @@ void * const LazyObserverContext = "LazyObserverContext";
 
 #pragma mark Reload
 
-- (void)storeItemModels
+- (void)storeItemModelsFromIndex:(NSInteger)startIndex
 {
-    [_modelBucket clear];
+    if (startIndex == 0) {
+        [_modelBucket clear];
+    }
     if (self.dataSource) {
         NSInteger count = [self.dataSource numberOfItemsInScrollView:self];
-        for (NSInteger index = 0; index < count; index++) {
+        for (NSInteger index = startIndex; index < count; index++) {
             TMLazyItemModel *itemModel = [self.dataSource scrollView:self itemModelAtIndex:index];
             if (itemModel.muiID.length == 0) {
                 itemModel.muiID = [NSString stringWithFormat:@"%zd", index];
@@ -297,8 +299,14 @@ void * const LazyObserverContext = "LazyObserverContext";
 
 - (void)reloadData
 {
-    [self storeItemModels];
+    [self storeItemModelsFromIndex:0];
     [self assembleSubviews:YES];
+}
+
+- (void)loadMoreDataFromIndex:(NSInteger)index
+{
+    [self storeItemModelsFromIndex:index];
+    [self assembleSubviews:NO];
 }
 
 - (UIView *)dequeueReusableItemWithIdentifier:(NSString *)identifier
