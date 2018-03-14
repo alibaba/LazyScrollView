@@ -10,8 +10,10 @@
 #import "TMLazyItemViewProtocol.h"
 #import "UIView+TMLazyScrollView.h"
 #import "TMLazyReusePool.h"
+#import "TMLazyModelBucket.h"
 
-#define LazyBufferHeight 20.0
+#define LazyBufferHeight 20
+#define LazyBucketHeight 400
 void * const LazyObserverContext = "LazyObserverContext";
 
 @interface TMLazyOuterScrollViewObserver: NSObject
@@ -27,16 +29,7 @@ void * const LazyObserverContext = "LazyObserverContext";
     NSMutableSet<UIView *> *_inScreenVisibleItems;
     
     // Store item models.
-    NSMutableArray<TMLazyItemModel *> *_itemModels;
-    
-    // Store view models below contentOffset of ScrollView
-    NSMutableSet<TMLazyItemModel *> *_firstSet;
-    // Store view models above contentOffset + height of ScrollView
-    NSMutableSet<TMLazyItemModel *> *_secondSet;
-    // View Model sorted by Top Edge.
-    NSArray<TMLazyItemModel *> *_modelsSortedByTop;
-    // View Model sorted by Bottom Edge.
-    NSArray<TMLazyItemModel *> *_modelsSortedByBottom;
+    TMLazyModelBucket *_modelBucket;
     
     // Store items which need to be reloaded.
     NSMutableSet<NSString *> *_needReloadingMuiIDs;
@@ -134,12 +127,7 @@ void * const LazyObserverContext = "LazyObserverContext";
         
         _visibleItems = [[NSMutableSet alloc] init];
         
-        _itemModels = [[NSMutableArray alloc] init];
-        
-        _firstSet = [[NSMutableSet alloc] initWithCapacity:30];
-        _secondSet = [[NSMutableSet alloc] initWithCapacity:30];
-        _modelsSortedByTop = [[NSArray alloc] init];
-        _modelsSortedByBottom = [[NSArray alloc]init];
+        _modelBucket = [[TMLazyModelBucket alloc] initWithBucketHeight:LazyBucketHeight];
         
         _needReloadingMuiIDs = [[NSMutableSet alloc] init];
         
@@ -201,8 +189,8 @@ void * const LazyObserverContext = "LazyObserverContext";
     // Calculate which item views should be shown.
     // Calculating will cost some time, so here is a buffer for reducing
     // times of calculating.
-    NSSet<TMLazyItemModel *> *newVisibleModels = [self showingItemIndexSetFrom:minY - LazyBufferHeight
-                                                                            to:maxY + LazyBufferHeight];
+    NSSet<TMLazyItemModel *> *newVisibleModels = [_modelBucket showingModelsFrom:minY - LazyBufferHeight
+                                                                              to:maxY + LazyBufferHeight];
     NSSet<NSString *> *newVisibleMuiIDs = [newVisibleModels valueForKey:@"muiID"];
 
     // Find if item views are in visible area.
@@ -228,13 +216,13 @@ void * const LazyObserverContext = "LazyObserverContext";
     }
     
     // Generate or reload visible item views.
-    for (NSString *muiID in newVisibleMuiIDs) {
-        // 1. Item view is not visible. We should create or reuse an item view.
-        // 2. Item view need to be reloaded.
-        BOOL isVisible = [self isMuiIdVisible:muiID];
-        BOOL needReload = [_needReloadingMuiIDs containsObject:muiID];
-        if (isVisible == NO || needReload == YES) {
-            if (self.dataSource) {
+    if (self.dataSource) {
+        for (NSString *muiID in newVisibleMuiIDs) {
+            // 1. Item view is not visible. We should create or reuse an item view.
+            // 2. Item view need to be reloaded.
+            BOOL isVisible = [self isMuiIdVisible:muiID];
+            BOOL needReload = [_needReloadingMuiIDs containsObject:muiID];
+            if (isVisible == NO || needReload == YES) {
                 // If you call dequeue method in your dataSource, the currentReloadingMuiID
                 // will be used for searching the best-matched reusable view.
                 if (isVisible) {
@@ -290,125 +278,26 @@ void * const LazyObserverContext = "LazyObserverContext";
     _lastInScreenVisibleModels = newInScreenVisibleModels;
 }
 
-// Do Binary search here to find index in view model array.
-- (NSUInteger)binarySearchForIndex:(NSArray *)frameArray baseLine:(CGFloat)baseLine isFromTop:(BOOL)fromTop
-{
-    NSInteger min = 0;
-    NSInteger max = frameArray.count - 1;
-    NSInteger mid = ceilf((min + max) * 0.5f);
-    while (mid > min && mid < max) {
-        CGRect rect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid] absRect];
-        // For top
-        if(fromTop) {
-            CGFloat itemTop = CGRectGetMinY(rect);
-            if (itemTop <= baseLine) {
-                CGRect nextItemRect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
-                CGFloat nextTop = CGRectGetMinY(nextItemRect);
-                if (nextTop > baseLine) {
-                    break;
-                }
-                min = mid;
-            } else {
-                max = mid;
-            }
-        }
-        // For bottom
-        else {
-            CGFloat itemBottom = CGRectGetMaxY(rect);
-            if (itemBottom >= baseLine) {
-                CGRect nextItemRect = [(TMLazyItemModel *)[frameArray tm_safeObjectAtIndex:mid + 1] absRect];
-                CGFloat nextBottom = CGRectGetMaxY(nextItemRect);
-                if (nextBottom < baseLine) {
-                    break;
-                }
-                min = mid;
-            } else {
-                max = mid;
-            }
-        }
-        mid = ceilf((CGFloat)(min + max) / 2.f);
-    }
-    return mid;
-}
-
-// Get which views should be shown in LazyScrollView.
-// The kind of values In NSSet is muiID.
-- (NSSet<TMLazyItemModel *> *)showingItemIndexSetFrom:(CGFloat)startY to:(CGFloat)endY
-{
-    NSUInteger endBottomIndex = [self binarySearchForIndex:_modelsSortedByBottom baseLine:startY isFromTop:NO];
-    [_firstSet removeAllObjects];
-    for (NSUInteger i = 0; i <= endBottomIndex; i++) {
-        TMLazyItemModel *model = [_modelsSortedByBottom tm_safeObjectAtIndex:i];
-        if (model != nil) {
-            [_firstSet addObject:model];
-        }
-    }
-    
-    NSUInteger endTopIndex = [self binarySearchForIndex:_modelsSortedByTop baseLine:endY isFromTop:YES];
-    [_secondSet removeAllObjects];
-    for (NSInteger i = 0; i <= endTopIndex; i++) {
-        TMLazyItemModel *model = [_modelsSortedByTop tm_safeObjectAtIndex:i];
-        if (model != nil) {
-            [_secondSet addObject:model];
-        }
-    }
-    
-    [_firstSet intersectSet:_secondSet];
-    return [_firstSet copy];
-}
-
-// Get view models from delegate. Create to indexes for sorting.
-- (void)creatScrollViewIndex
-{
-    NSUInteger count = 0;
-    if (self.dataSource) {
-        count = [self.dataSource numberOfItemsInScrollView:self];
-    }
-    
-    [_itemModels removeAllObjects];
-    for (NSUInteger i = 0 ; i < count ; i++) {
-        TMLazyItemModel *rectmodel = nil;
-        if (self.dataSource) {
-            rectmodel = [self.dataSource scrollView:self itemModelAtIndex:i];
-            if (rectmodel.muiID.length == 0) {
-                rectmodel.muiID = [NSString stringWithFormat:@"%lu", (unsigned long)i];
-            }
-        }
-        [_itemModels tm_safeAddObject:rectmodel];
-    }
-    
-    _modelsSortedByTop = [_itemModels sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-        CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
-        CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
-        if (rect1.origin.y < rect2.origin.y) {
-            return NSOrderedAscending;
-        }  else if (rect1.origin.y > rect2.origin.y) {
-            return NSOrderedDescending;
-        } else {
-            return NSOrderedSame;
-        }
-    }];
-    
-    _modelsSortedByBottom = [_itemModels sortedArrayUsingComparator:^NSComparisonResult(id obj1 ,id obj2) {
-        CGRect rect1 = [(TMLazyItemModel *) obj1 absRect];
-        CGRect rect2 = [(TMLazyItemModel *) obj2 absRect];
-        CGFloat bottom1 = CGRectGetMaxY(rect1);
-        CGFloat bottom2 = CGRectGetMaxY(rect2);
-        if (bottom1 > bottom2) {
-            return NSOrderedAscending;
-        } else if (bottom1 < bottom2) {
-            return  NSOrderedDescending;
-        } else {
-            return NSOrderedSame;
-        }
-    }];
-}
-
 #pragma mark Reload
+
+- (void)storeItemModels
+{
+    [_modelBucket clear];
+    if (self.dataSource) {
+        NSInteger count = [self.dataSource numberOfItemsInScrollView:self];
+        for (NSInteger index = 0; index < count; index++) {
+            TMLazyItemModel *itemModel = [self.dataSource scrollView:self itemModelAtIndex:index];
+            if (itemModel.muiID.length == 0) {
+                itemModel.muiID = [NSString stringWithFormat:@"%zd", index];
+            }
+            [_modelBucket addModel:itemModel];
+        }
+    }
+}
 
 - (void)reloadData
 {
-    [self creatScrollViewIndex];
+    [self storeItemModels];
     [self assembleSubviews:YES];
 }
 
