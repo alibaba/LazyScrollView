@@ -96,11 +96,7 @@
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier
                                                  muiID:(nullable NSString *)muiID;
 
-/**
- Remember to remove item views from LazyScrollView if the autoAddSubview
- property is NO.
- */
-- (void)clearItemsAndReusePool;
+- (void)clearVisibleItems;
 - (void)removeAllLayouts __deprecated_msg("use clearItemsAndReusePool");
 
 /**
