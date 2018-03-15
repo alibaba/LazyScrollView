@@ -1,96 +1,73 @@
 //
-//  OuterViewController.m
+//  AsyncViewController.m
 //  LazyScrollViewDemo
 //
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
-#import "OuterViewController.h"
+#import "AsyncViewController.h"
 #import <LazyScroll/LazyScroll.h>
 #import <TMUtils/TMUtils.h>
 
-@interface OuterViewController () <TMLazyScrollViewDataSource> {
+@interface AsyncViewController () <TMLazyScrollViewDataSource> {
     NSMutableArray * _rectArray;
     NSMutableArray * _colorArray;
     TMLazyScrollView * _scrollView;
+    
+    BOOL enableDelay;
 }
 
 @end
 
-@implementation OuterViewController
+@implementation AsyncViewController
 
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.title = @"Outer";
+        self.title = @"Sync";
     }
     return self;
 }
 
-- (void)dealloc
-{
-    // VERY IMPORTANT!
-    _scrollView.outerScrollView = nil;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     _scrollView = [[TMLazyScrollView alloc] initWithFrame:self.view.bounds];
     _scrollView.dataSource = self;
     _scrollView.autoAddSubview = YES;
+    [self.view addSubview:_scrollView];
     
     _rectArray = [[NSMutableArray alloc] init];
-    CGFloat maxY = 0;
+    CGFloat currentY = 10, maxY = 0;
     CGFloat viewWidth = CGRectGetWidth(self.view.bounds);
-    for (int i = 0; i < 20; i++) {
-        [self addRect:CGRectMake((i % 2) * (viewWidth - 20 + 3) / 2 + 10, i / 2 * 80 + 10, (viewWidth - 20 - 3) / 2, 80 - 3) andUpdateMaxY:&maxY];
+    for (int i = 0; i < 50; i++) {
+        [self addRect:CGRectMake(10, i * 80 + currentY, 98, 80 - 3) andUpdateMaxY:&maxY];
+        [self addRect:CGRectMake(111, i * 80 + currentY, 98, 80 - 3) andUpdateMaxY:&maxY];
+        [self addRect:CGRectMake(212, i * 80 + currentY, 98, 80 - 3) andUpdateMaxY:&maxY];
     }
     
     _colorArray = [NSMutableArray arrayWithCapacity:_rectArray.count];
     CGFloat hue = 0;
-    for (int i = 0; i < _rectArray.count; i++) {
+    for (int i = 0; i < 20; i++) {
         [_colorArray addObject:[UIColor colorWithHue:hue saturation:1 brightness:1 alpha:1]];
         hue += 0.05;
-        if (hue >= 1) {
-            hue = 0;
-        }
     }
     
     _scrollView.contentSize = CGSizeMake(viewWidth, maxY + 10);
-    _scrollView.frame = CGRectMake(0, 0, viewWidth, maxY + 10);
-    _scrollView.outerScrollView = self.tableView;
-    self.tableView.tableFooterView = _scrollView;
     [_scrollView reloadData];
+    enableDelay = YES;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reload" style:UIBarButtonItemStylePlain target:self action:@selector(reloadAction)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Switch" style:UIBarButtonItemStylePlain target:self action:@selector(switchAction)];
 }
 
-- (void)reloadAction
+- (void)switchAction
 {
-    [_scrollView reloadData];
-}
-
-#pragma mark TableView
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 10;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-    }
-    if (indexPath.row == 0) {
-        cell.textLabel.text = @"The table view's footer view is a LazyScrollView.";
+    _scrollView.loadAllItemsImmediately = !_scrollView.loadAllItemsImmediately;
+    if (_scrollView.loadAllItemsImmediately) {
+        self.title = @"Sync";
     } else {
-        cell.textLabel.text = [@(indexPath.row) stringValue];
+        self.title = @"Async";
     }
-    return cell;
 }
 
 #pragma mark LazyScrollView
@@ -116,9 +93,13 @@
     if (!view) {
         view = [UIView new];
         view.reuseIdentifier = @"testView";
-        view.backgroundColor = [_colorArray tm_safeObjectAtIndex:index];
+        view.backgroundColor = [_colorArray tm_safeObjectAtIndex:index % 20];
     }
     view.frame = [(NSValue *)[_rectArray objectAtIndex:index] CGRectValue];
+    if (enableDelay) {
+        // Add a delay manually.
+        [NSThread sleepForTimeInterval:0.015];
+    }
     return view;
 }
 

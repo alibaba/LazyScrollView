@@ -72,6 +72,12 @@
 @property (nonatomic, assign) BOOL autoClearGestures;
 
 /**
+ If it is NO, LazyScrollView will try to load new item views in several frames.
+ Default value is YES.
+ */
+@property (nonatomic, assign) BOOL loadAllItemsImmediately;
+
+/**
  Item views which is in the buffer area.
  They will be shown soon.
  */

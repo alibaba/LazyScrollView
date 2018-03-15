@@ -91,7 +91,6 @@
     UIView *view = (UIView *)[scrollView dequeueReusableItemWithIdentifier:@"testView"];
     NSInteger index = [muiID integerValue];
     if (!view) {
-        NSLog(@"create a new view");
         view = [UIView new];
         view.reuseIdentifier = @"testView";
         view.backgroundColor = [_colorArray tm_safeObjectAtIndex:index % 20];

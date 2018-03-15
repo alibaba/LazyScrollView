@@ -21,7 +21,7 @@
 {
     if (self = [super init]) {
         self.title = @"LazyScrollDemo";
-        self.demoArray = @[@"Reuse", @"OuterScrollView", @"LoadMore"];
+        self.demoArray = @[@"Reuse", @"OuterScrollView", @"LoadMore", @"Async"];
     }
     return self;
 }
