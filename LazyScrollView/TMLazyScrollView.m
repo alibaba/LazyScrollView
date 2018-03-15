@@ -30,6 +30,7 @@ void * const LazyObserverContext = "LazyObserverContext";
     
     // Store item models.
     TMLazyModelBucket *_modelBucket;
+    NSInteger _itemCount;
     
     // Store items which need to be reloaded.
     NSMutableSet<NSString *> *_needReloadingMuiIDs;
@@ -283,11 +284,12 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (void)storeItemModelsFromIndex:(NSInteger)startIndex
 {
     if (startIndex == 0) {
+        _itemCount = 0;
         [_modelBucket clear];
     }
     if (self.dataSource) {
-        NSInteger count = [self.dataSource numberOfItemsInScrollView:self];
-        for (NSInteger index = startIndex; index < count; index++) {
+        _itemCount = [self.dataSource numberOfItemsInScrollView:self];
+        for (NSInteger index = startIndex; index < _itemCount; index++) {
             TMLazyItemModel *itemModel = [self.dataSource scrollView:self itemModelAtIndex:index];
             if (itemModel.muiID.length == 0) {
                 itemModel.muiID = [NSString stringWithFormat:@"%zd", index];
@@ -303,9 +305,9 @@ void * const LazyObserverContext = "LazyObserverContext";
     [self assembleSubviews:YES];
 }
 
-- (void)loadMoreDataFromIndex:(NSInteger)index
+- (void)loadMoreData
 {
-    [self storeItemModelsFromIndex:index];
+    [self storeItemModelsFromIndex:_itemCount];
     [self assembleSubviews:NO];
 }
 

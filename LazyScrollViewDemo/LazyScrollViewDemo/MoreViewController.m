@@ -67,7 +67,7 @@
     }
     
     _scrollView.contentSize = CGSizeMake(viewWidth, maxY + 10);
-    [_scrollView loadMoreDataFromIndex:_rectArray.count - 10];
+    [_scrollView loadMoreData];
 }
 
 #pragma mark LazyScrollView
