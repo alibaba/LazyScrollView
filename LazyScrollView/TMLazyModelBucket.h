@@ -20,10 +20,11 @@
 - (instancetype)initWithBucketHeight:(CGFloat)bucketHeight;
 
 - (void)addModel:(TMLazyItemModel *)itemModel;
+- (void)addModels:(NSSet<TMLazyItemModel *> *)itemModels;
 - (void)removeModel:(TMLazyItemModel *)itemModel;
-- (void)removeModels:(NSArray<TMLazyItemModel *> *)itemModels;
+- (void)removeModels:(NSSet<TMLazyItemModel *> *)itemModels;
 - (void)reloadModel:(TMLazyItemModel *)itemModel;
-- (void)reloadModels:(NSArray<TMLazyItemModel *> *)itemModels;
+- (void)reloadModels:(NSSet<TMLazyItemModel *> *)itemModels;
 - (void)clear;
 - (NSSet<TMLazyItemModel *> *)showingModelsFrom:(CGFloat)startY to:(CGFloat)endY;
 

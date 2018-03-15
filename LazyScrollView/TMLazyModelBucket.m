@@ -43,6 +43,15 @@
     }
 }
 
+- (void)addModels:(NSSet<TMLazyItemModel *> *)itemModels
+{
+    if (itemModels) {
+        for (TMLazyItemModel *itemModel in itemModels) {
+            [self addModel:itemModel];
+        }
+    }
+}
+
 - (void)removeModel:(TMLazyItemModel *)itemModel
 {
     if (itemModel) {
@@ -52,12 +61,11 @@
     }
 }
 
-- (void)removeModels:(NSArray<TMLazyItemModel *> *)itemModels
+- (void)removeModels:(NSSet<TMLazyItemModel *> *)itemModels
 {
     if (itemModels) {
-        NSSet *itemModelSet = [NSSet setWithArray:itemModels];
         for (NSMutableSet *bucket in _buckets) {
-            [bucket minusSet:itemModelSet];
+            [bucket minusSet:itemModels];
         }
     }
 }
@@ -68,12 +76,10 @@
     [self addModel:itemModel];
 }
 
-- (void)reloadModels:(NSArray<TMLazyItemModel *> *)itemModels
+- (void)reloadModels:(NSSet<TMLazyItemModel *> *)itemModels
 {
     [self removeModels:itemModels];
-    for (TMLazyItemModel *itemModel in itemModels) {
-        [self addModel:itemModel];
-    }
+    [self addModels:itemModels];
 }
 
 - (void)clear

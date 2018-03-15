@@ -34,20 +34,22 @@
     [bucket addModel:[ModelBucketTest createModelHelperWithY:30 height:10]];
     [bucket addModel:[ModelBucketTest createModelHelperWithY:40 height:10]];
     [bucket addModel:[ModelBucketTest createModelHelperWithY:50 height:10]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:0 height:20]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:10 height:20]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:20 height:20]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:30 height:20]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:40 height:20]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:0 height:30]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:10 height:30]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:20 height:30]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:30 height:30]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:0 height:40]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:10 height:40]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:20 height:40]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:0 height:50]];
-    [bucket addModel:[ModelBucketTest createModelHelperWithY:10 height:50]];
+    [bucket addModels:[NSSet setWithArray:@[
+        [ModelBucketTest createModelHelperWithY:0 height:20],
+        [ModelBucketTest createModelHelperWithY:10 height:20],
+        [ModelBucketTest createModelHelperWithY:20 height:20],
+        [ModelBucketTest createModelHelperWithY:30 height:20],
+        [ModelBucketTest createModelHelperWithY:40 height:20],
+        [ModelBucketTest createModelHelperWithY:0 height:30],
+        [ModelBucketTest createModelHelperWithY:10 height:30],
+        [ModelBucketTest createModelHelperWithY:20 height:30],
+        [ModelBucketTest createModelHelperWithY:30 height:30],
+        [ModelBucketTest createModelHelperWithY:0 height:40],
+        [ModelBucketTest createModelHelperWithY:10 height:40],
+        [ModelBucketTest createModelHelperWithY:20 height:40],
+        [ModelBucketTest createModelHelperWithY:0 height:50],
+        [ModelBucketTest createModelHelperWithY:10 height:50]
+    ]]];
     TMLazyItemModel *lastModel = [ModelBucketTest createModelHelperWithY:0 height:60];
     [bucket addModel:lastModel];
     
@@ -103,6 +105,12 @@
     set = [set valueForKey:@"muiID"];
     assertThat(set, containsInAnyOrder(@"10", @"40", @"50", @"1030", @"1040", @"1050", @"2020", @"2030", @"2040", @"3010", @"3020", @"3030", @"4010", @"4020", nil));
     
+    [bucket removeModels:[bucket showingModelsFrom:0 to:40]];
+    set = [bucket showingModelsFrom:0 to:60];
+    assertThat(set, hasCountOf(3));
+    set = [set valueForKey:@"muiID"];
+    assertThat(set, containsInAnyOrder(@"4010", @"4020", @"5010", nil));
+
     [bucket clear];
     assertThat([bucket showingModelsFrom:0 to:50], hasCountOf(0));
     assertThat([bucket showingModelsFrom:0 to:40], hasCountOf(0));
