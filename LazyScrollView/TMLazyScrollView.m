@@ -156,10 +156,19 @@ void * const LazyObserverContext = "LazyObserverContext";
 
 - (void)outerScrollViewDidScroll
 {
-    if (LazyBufferHeight < ABS(self.outerScrollView.contentOffset.y - _lastContentOffset.y)) {
-        _lastContentOffset = self.outerScrollView.contentOffset;
-        [self assembleSubviews:NO];
+    if (self.outerScrollView) {
+        CGPoint contentOffset = [self.outerScrollView convertPoint:self.outerScrollView.contentOffset toView:self];
+        if (LazyBufferHeight < ABS(contentOffset.y - _lastContentOffset.y)) {
+            _lastContentOffset = contentOffset;
+            [self assembleSubviews:NO];
+        }
     }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self outerScrollViewDidScroll];
 }
 
 #pragma mark CoreLogic
@@ -167,9 +176,10 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (void)assembleSubviews:(BOOL)isReload
 {
     if (self.outerScrollView) {
-        CGRect visibleArea = CGRectIntersection(self.outerScrollView.bounds, self.frame);
+        CGRect frame = [self.superview convertRect:self.frame toView:self.outerScrollView];
+        CGRect visibleArea = CGRectIntersection(self.outerScrollView.bounds, frame);
         if (visibleArea.size.height > 0) {
-            CGFloat offsetY = CGRectGetMinY(self.frame);
+            CGFloat offsetY = CGRectGetMinY(frame);
             CGFloat minY = CGRectGetMinY(visibleArea) - offsetY;
             CGFloat maxY = CGRectGetMaxY(visibleArea) - offsetY;
             [self assembleSubviews:isReload minY:minY maxY:maxY];
@@ -337,26 +347,26 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (UIView *)dequeueReusableItemWithIdentifier:(NSString *)identifier muiID:(NSString *)muiID
 {
     UIView *result = nil;
-        if (_currentReloadingMuiID) {
-            for (UIView *item in _visibleItems) {
-                if ([item.muiID isEqualToString:_currentReloadingMuiID]
-                 && [item.reuseIdentifier isEqualToString:identifier]) {
-                    result = item;
-                    break;
-                }
+    if (_currentReloadingMuiID) {
+        for (UIView *item in _visibleItems) {
+            if ([item.muiID isEqualToString:_currentReloadingMuiID]
+                && [item.reuseIdentifier isEqualToString:identifier]) {
+                result = item;
+                break;
             }
         }
-        if (result == nil) {
-            result = [self.reusePool dequeueItemViewForReuseIdentifier:identifier andMuiID:muiID];
+    }
+    if (result == nil) {
+        result = [self.reusePool dequeueItemViewForReuseIdentifier:identifier andMuiID:muiID];
+    }
+    if (result) {
+        if (self.autoClearGestures) {
+            result.gestureRecognizers = nil;
         }
-        if (result) {
-            if (self.autoClearGestures) {
-                result.gestureRecognizers = nil;
-            }
-            if ([result respondsToSelector:@selector(mui_prepareForReuse)]) {
-                [(UIView<TMLazyItemViewProtocol> *)result mui_prepareForReuse];
-            }
+        if ([result respondsToSelector:@selector(mui_prepareForReuse)]) {
+            [(UIView<TMLazyItemViewProtocol> *)result mui_prepareForReuse];
         }
+    }
     return result;
 }
 
@@ -365,12 +375,12 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (void)clearVisibleItems:(BOOL)enableRecycle
 {
     if (enableRecycle) {
-    for (UIView *itemView in _visibleItems) {
+        for (UIView *itemView in _visibleItems) {
             itemView.hidden = YES;
             if (itemView.reuseIdentifier.length > 0) {
-            [self.reusePool addItemView:itemView forReuseIdentifier:itemView.reuseIdentifier];
+                [self.reusePool addItemView:itemView forReuseIdentifier:itemView.reuseIdentifier];
+            }
         }
-    }
     } else {
         for (UIView *itemView in _visibleItems) {
             [itemView removeFromSuperview];
