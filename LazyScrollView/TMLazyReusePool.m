@@ -26,7 +26,7 @@
 
 - (void)addItemView:(UIView *)itemView forReuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (reuseIdentifier == nil || itemView == nil) {
+    if (reuseIdentifier == nil || reuseIdentifier.length == 0 || itemView == nil) {
         return;
     }
     NSMutableSet *reuseSet = [_reuseDict tm_safeObjectForKey:reuseIdentifier];
@@ -44,7 +44,7 @@
 
 - (UIView *)dequeueItemViewForReuseIdentifier:(NSString *)reuseIdentifier andMuiID:(NSString *)muiID
 {
-    if (reuseIdentifier == nil) {
+    if (reuseIdentifier == nil || reuseIdentifier.length == 0) {
         return nil;
     }
     UIView *result = nil;
@@ -71,6 +71,15 @@
 - (void)clear
 {
     [_reuseDict removeAllObjects];
+}
+
+- (NSSet<UIView *> *)allItemViews
+{
+    NSMutableSet *result = [NSMutableSet set];
+    for (NSMutableSet *reuseSet in _reuseDict.allValues) {
+        [result unionSet:reuseSet];
+    }
+    return [result copy];
 }
 
 @end

@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TMLazyItemModel.h"
+#import "UIView+TMLazyScrollView.h"
 
 @class TMLazyReusePool;
 @class TMLazyScrollView;
@@ -103,13 +104,34 @@
 - (nullable UIView *)dequeueReusableItemWithIdentifier:(nonnull NSString *)identifier
                                                  muiID:(nullable NSString *)muiID;
 
-- (void)clearVisibleItems;
-- (void)removeAllLayouts __deprecated_msg("use clearItemsAndReusePool");
+/**
+ Hide all visible items and recycle reusable item views.
+ After call this method, every item view will receive
+ 'afterGetView' & 'didEnterWithTimes' again.
+ 
+ @param enableRecycle  Recycle items or remove them.
+ */
+- (void)clearVisibleItems:(BOOL)enableRecycle;
+- (void)removeAllLayouts __deprecated_msg("use clearVisibleItems: or resetAll");
 
 /**
- After call this method, the times of 'mui_didEnterWithTimes:' will start from 0.
+ Remove reusable item views from reuse pool to release memory.
+ */
+- (void)clearReuseItems;
+- (void)cleanRecycledView __deprecated_msg("use clearReuseItems");
+
+/**
+ After call this method, the times of 'didEnterWithTimes' will start from 0.
  */
 - (void)resetItemsEnterTimes;
 - (void)resetViewEnterTimes __deprecated_msg("use resetItemsEnterTimes");
+
+/**
+ Reset the state of LazyScrollView.
+ */
+- (void)resetAll;
+
+- (void)removeContentOffsetObserver __deprecated_msg("set outerScrollView to nil");
+- (void)reLayout __deprecated_msg("use reloadData");
 
 @end

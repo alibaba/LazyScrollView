@@ -5,6 +5,7 @@
 //  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 
 /**

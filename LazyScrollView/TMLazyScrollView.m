@@ -8,7 +8,6 @@
 #import "TMLazyScrollView.h"
 #import <objc/runtime.h>
 #import "TMLazyItemViewProtocol.h"
-#import "UIView+TMLazyScrollView.h"
 #import "TMLazyReusePool.h"
 #import "TMLazyModelBucket.h"
 
@@ -338,7 +337,6 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (UIView *)dequeueReusableItemWithIdentifier:(NSString *)identifier muiID:(NSString *)muiID
 {
     UIView *result = nil;
-    if (identifier && identifier.length > 0) {
         if (_currentReloadingMuiID) {
             for (UIView *item in _visibleItems) {
                 if ([item.muiID isEqualToString:_currentReloadingMuiID]
@@ -359,18 +357,23 @@ void * const LazyObserverContext = "LazyObserverContext";
                 [(UIView<TMLazyItemViewProtocol> *)result mui_prepareForReuse];
             }
         }
-    }
     return result;
 }
 
 #pragma mark Clear & Reset
 
-- (void)clearVisibleItems
+- (void)clearVisibleItems:(BOOL)enableRecycle
 {
+    if (enableRecycle) {
     for (UIView *itemView in _visibleItems) {
-        if (itemView.reuseIdentifier.length > 0) {
             itemView.hidden = YES;
+            if (itemView.reuseIdentifier.length > 0) {
             [self.reusePool addItemView:itemView forReuseIdentifier:itemView.reuseIdentifier];
+        }
+    }
+    } else {
+        for (UIView *itemView in _visibleItems) {
+            [itemView removeFromSuperview];
         }
     }
     [_visibleItems removeAllObjects];
@@ -378,7 +381,20 @@ void * const LazyObserverContext = "LazyObserverContext";
 
 - (void)removeAllLayouts
 {
-    [self clearVisibleItems];
+    [self clearVisibleItems:YES];
+}
+
+- (void)clearReuseItems
+{
+    for (UIView *itemView in [self.reusePool allItemViews]) {
+        [itemView removeFromSuperview];
+    }
+    [self.reusePool clear];
+}
+
+- (void)cleanRecycledView
+{
+    [self clearReuseItems];
 }
 
 - (void)resetItemsEnterTimes
@@ -389,6 +405,24 @@ void * const LazyObserverContext = "LazyObserverContext";
 - (void)resetViewEnterTimes
 {
     [self resetItemsEnterTimes];
+}
+
+- (void)resetAll
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(generateItems:) object:@(NO)];
+    [self clearVisibleItems:NO];
+    [self clearReuseItems];
+    [self resetItemsEnterTimes];
+}
+
+- (void)removeContentOffsetObserver
+{
+    self.outerScrollView = nil;
+}
+
+- (void)reLayout
+{
+    [self reloadData];
 }
 
 #pragma mark Private
