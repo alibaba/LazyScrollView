@@ -275,7 +275,10 @@ void * const LazyObserverContext = "LazyObserverContext";
         if (isReload == YES || self.loadAllItemsImmediately == YES || hasLoadAnItem == NO) {
             [self generateItems:isReload];
         } else {
-            [self performSelector:@selector(generateItems:) withObject:@(NO) afterDelay:0.0000001];
+            [self performSelector:@selector(generateItems:)
+                       withObject:@(NO)
+                       afterDelay:0.0000001
+                          inModes:@[NSRunLoopCommonModes]];
         }
     }
 }
