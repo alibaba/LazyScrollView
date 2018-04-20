@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "LazyScroll"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "A ScrollView to resolve the problem of reusability of views."                 
   s.homepage     = "https://github.com/alibaba/LazyScrollView"
   s.license      = { :type => 'MIT' }
@@ -9,11 +9,11 @@ Pod::Spec.new do |s|
                      "HarrisonXi" => "gpra8764@gmail.com" }
   s.platform     = :ios
   s.ios.deployment_target = "7.0"
-  s.source       = { :git => "https://github.com/alibaba/LazyScrollView.git", :tag => "1.0.0" }
+  s.source       = { :git => "https://github.com/alibaba/LazyScrollView.git", :tag => "1.0.1" }
   s.source_files = "LazyScrollView/*.{h,m}"
   s.requires_arc = true
   s.prefix_header_contents = '#import <TMUtils/TMUtils.h>'
 
-  s.dependency 'TMUtils', '~> 1.0.0'
+  s.dependency 'TMUtils', '~> 1.0.1'
 
 end
