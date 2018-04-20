@@ -1,0 +1,362 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		53E176C0B4093753A77EF855 /* libPods-LazyScrollViewTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ED7BF79578DE1BA510C818B /* libPods-LazyScrollViewTest.a */; };
+		92AED9EE2057C57C00E4D744 /* ModelBucketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8ED7BF79578DE1BA510C818B /* libPods-LazyScrollViewTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LazyScrollViewTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92AED9EA2057C57C00E4D744 /* LazyScrollViewTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LazyScrollViewTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelBucketTest.m; sourceTree = "<group>"; };
+		92AED9EF2057C57C00E4D744 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B5607E29605A5026A43D96A6 /* Pods-LazyScrollViewTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewTest.release.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest.release.xcconfig"; sourceTree = "<group>"; };
+		FCC6B3D1BF91291A7E8BDAF5 /* Pods-LazyScrollViewTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewTest.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		92AED9E72057C57C00E4D744 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53E176C0B4093753A77EF855 /* libPods-LazyScrollViewTest.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4B38F8836B3305993BD0FDB5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8ED7BF79578DE1BA510C818B /* libPods-LazyScrollViewTest.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		92AED9DF2057C56F00E4D744 = {
+			isa = PBXGroup;
+			children = (
+				92AED9EC2057C57C00E4D744 /* LazyScrollViewTest */,
+				92AED9EB2057C57C00E4D744 /* Products */,
+				AB4262A336006D10EBD97FE5 /* Pods */,
+				4B38F8836B3305993BD0FDB5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		92AED9EB2057C57C00E4D744 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				92AED9EA2057C57C00E4D744 /* LazyScrollViewTest.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		92AED9EC2057C57C00E4D744 /* LazyScrollViewTest */ = {
+			isa = PBXGroup;
+			children = (
+				92AED9ED2057C57C00E4D744 /* ModelBucketTest.m */,
+				92AED9EF2057C57C00E4D744 /* Info.plist */,
+			);
+			path = LazyScrollViewTest;
+			sourceTree = "<group>";
+		};
+		AB4262A336006D10EBD97FE5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FCC6B3D1BF91291A7E8BDAF5 /* Pods-LazyScrollViewTest.debug.xcconfig */,
+				B5607E29605A5026A43D96A6 /* Pods-LazyScrollViewTest.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		92AED9E92057C57C00E4D744 /* LazyScrollViewTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92AED9F02057C57C00E4D744 /* Build configuration list for PBXNativeTarget "LazyScrollViewTest" */;
+			buildPhases = (
+				B8A103919F72E186012F8A7C /* [CP] Check Pods Manifest.lock */,
+				92AED9E62057C57C00E4D744 /* Sources */,
+				92AED9E72057C57C00E4D744 /* Frameworks */,
+				92AED9E82057C57C00E4D744 /* Resources */,
+				7357D597561B2C39FF121950 /* [CP] Embed Pods Frameworks */,
+				212D0C87D1CE5785C8BFFA53 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LazyScrollViewTest;
+			productName = LazyScrollViewTest;
+			productReference = 92AED9EA2057C57C00E4D744 /* LazyScrollViewTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		92AED9E02057C56F00E4D744 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					92AED9E92057C57C00E4D744 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 92AED9E32057C56F00E4D744 /* Build configuration list for PBXProject "LazyScrollViewTest" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 92AED9DF2057C56F00E4D744;
+			productRefGroup = 92AED9EB2057C57C00E4D744 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				92AED9E92057C57C00E4D744 /* LazyScrollViewTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		92AED9E82057C57C00E4D744 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		212D0C87D1CE5785C8BFFA53 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7357D597561B2C39FF121950 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-LazyScrollViewTest/Pods-LazyScrollViewTest-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B8A103919F72E186012F8A7C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LazyScrollViewTest-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		92AED9E62057C57C00E4D744 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92AED9EE2057C57C00E4D744 /* ModelBucketTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		92AED9E42057C56F00E4D744 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Debug;
+		};
+		92AED9E52057C56F00E4D744 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Release;
+		};
+		92AED9F12057C57C00E4D744 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FCC6B3D1BF91291A7E8BDAF5 /* Pods-LazyScrollViewTest.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LazyScrollViewTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = tmall.LazyScrollViewTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		92AED9F22057C57C00E4D744 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B5607E29605A5026A43D96A6 /* Pods-LazyScrollViewTest.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LazyScrollViewTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = tmall.LazyScrollViewTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		92AED9E32057C56F00E4D744 /* Build configuration list for PBXProject "LazyScrollViewTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92AED9E42057C56F00E4D744 /* Debug */,
+				92AED9E52057C56F00E4D744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92AED9F02057C57C00E4D744 /* Build configuration list for PBXNativeTarget "LazyScrollViewTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92AED9F12057C57C00E4D744 /* Debug */,
+				92AED9F22057C57C00E4D744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 92AED9E02057C56F00E4D744 /* Project object */;
+}

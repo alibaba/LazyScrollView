@@ -3,102 +3,111 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		70D7C6381E6427CD008B76C6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D7C6371E6427CD008B76C6 /* main.m */; };
-		70D7C63B1E6427CD008B76C6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D7C63A1E6427CD008B76C6 /* AppDelegate.m */; };
-		70D7C63E1E6427CD008B76C6 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D7C63D1E6427CD008B76C6 /* ViewController.m */; };
-		70D7C6411E6427CD008B76C6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D7C63F1E6427CD008B76C6 /* Main.storyboard */; };
-		70D7C6431E6427CD008B76C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D7C6421E6427CD008B76C6 /* Assets.xcassets */; };
-		70D7C6461E6427CD008B76C6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D7C6441E6427CD008B76C6 /* LaunchScreen.storyboard */; };
-		F0517B48C8AEA67EB7DAF979 /* libPods-LazyScrollViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECD1FF81519CA31F379C5611 /* libPods-LazyScrollViewDemo.a */; };
+		9247FDBD205A9311004FB14E /* AsyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9247FDBC205A9310004FB14E /* AsyncViewController.m */; };
+		927CAE3B2046B37700BD3B19 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 927CAE3A2046B37700BD3B19 /* AppDelegate.m */; };
+		927CAE3E2046B37700BD3B19 /* ReuseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 927CAE3D2046B37700BD3B19 /* ReuseViewController.m */; };
+		927CAE432046B37700BD3B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 927CAE422046B37700BD3B19 /* Assets.xcassets */; };
+		927CAE462046B37700BD3B19 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 927CAE442046B37700BD3B19 /* LaunchScreen.storyboard */; };
+		927CAE492046B37700BD3B19 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 927CAE482046B37700BD3B19 /* main.m */; };
+		929CC56A20592B1400C2870B /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 929CC56920592B1400C2870B /* MoreViewController.m */; };
+		92F01C4720493C36000983CA /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92F01C4620493C36000983CA /* MainViewController.m */; };
+		92F01C4A20493D9C000983CA /* OuterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92F01C4920493D9C000983CA /* OuterViewController.m */; };
+		D1AB44F5D8E0B6975BF3CDF3 /* libPods-LazyScrollViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA97F266258FD7B207134C76 /* libPods-LazyScrollViewDemo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		70D7C6331E6427CD008B76C6 /* LazyScrollViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LazyScrollViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		70D7C6371E6427CD008B76C6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		70D7C6391E6427CD008B76C6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		70D7C63A1E6427CD008B76C6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		70D7C63C1E6427CD008B76C6 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		70D7C63D1E6427CD008B76C6 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		70D7C6401E6427CD008B76C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		70D7C6421E6427CD008B76C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		70D7C6451E6427CD008B76C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		70D7C6471E6427CD008B76C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8584A0928BAA1136A3EA481D /* Pods-LazyScrollViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo.release.xcconfig"; sourceTree = "<group>"; };
-		A5C4C9124EC9215291495727 /* Pods-LazyScrollViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		ECD1FF81519CA31F379C5611 /* libPods-LazyScrollViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LazyScrollViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		80196663B6BB20F868052CE9 /* Pods-LazyScrollViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewDemo.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		9247FDBB205A9310004FB14E /* AsyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncViewController.h; sourceTree = "<group>"; };
+		9247FDBC205A9310004FB14E /* AsyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncViewController.m; sourceTree = "<group>"; };
+		927CAE362046B37700BD3B19 /* LazyScrollViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LazyScrollViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		927CAE392046B37700BD3B19 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		927CAE3A2046B37700BD3B19 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		927CAE3C2046B37700BD3B19 /* ReuseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReuseViewController.h; sourceTree = "<group>"; };
+		927CAE3D2046B37700BD3B19 /* ReuseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReuseViewController.m; sourceTree = "<group>"; };
+		927CAE422046B37700BD3B19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		927CAE452046B37700BD3B19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		927CAE472046B37700BD3B19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		927CAE482046B37700BD3B19 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		929CC56820592B1400C2870B /* MoreViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
+		929CC56920592B1400C2870B /* MoreViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
+		92F01C4520493C36000983CA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		92F01C4620493C36000983CA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		92F01C4820493D9C000983CA /* OuterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OuterViewController.h; sourceTree = "<group>"; };
+		92F01C4920493D9C000983CA /* OuterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OuterViewController.m; sourceTree = "<group>"; };
+		AA72B4C430D44D71DA7D6BD2 /* Pods-LazyScrollViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LazyScrollViewDemo.release.xcconfig"; path = "../Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo.release.xcconfig"; sourceTree = "<group>"; };
+		CA97F266258FD7B207134C76 /* libPods-LazyScrollViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LazyScrollViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		70D7C6301E6427CD008B76C6 /* Frameworks */ = {
+		927CAE332046B37700BD3B19 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0517B48C8AEA67EB7DAF979 /* libPods-LazyScrollViewDemo.a in Frameworks */,
+				D1AB44F5D8E0B6975BF3CDF3 /* libPods-LazyScrollViewDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		03B4679B891B589AF7A68BBB /* Pods */ = {
+		54053CC9EA1F39E5076BC69F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A5C4C9124EC9215291495727 /* Pods-LazyScrollViewDemo.debug.xcconfig */,
-				8584A0928BAA1136A3EA481D /* Pods-LazyScrollViewDemo.release.xcconfig */,
+				80196663B6BB20F868052CE9 /* Pods-LazyScrollViewDemo.debug.xcconfig */,
+				AA72B4C430D44D71DA7D6BD2 /* Pods-LazyScrollViewDemo.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		70D7C62A1E6427CD008B76C6 = {
+		927CAE2D2046B37700BD3B19 = {
 			isa = PBXGroup;
 			children = (
-				70D7C6351E6427CD008B76C6 /* LazyScrollViewDemo */,
-				70D7C6341E6427CD008B76C6 /* Products */,
-				03B4679B891B589AF7A68BBB /* Pods */,
-				A48E16FBDA7CA19039D2164B /* Frameworks */,
+				927CAE382046B37700BD3B19 /* LazyScrollViewDemo */,
+				927CAE372046B37700BD3B19 /* Products */,
+				54053CC9EA1F39E5076BC69F /* Pods */,
+				A9F9DA53D9F091F220CF1FF4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		70D7C6341E6427CD008B76C6 /* Products */ = {
+		927CAE372046B37700BD3B19 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				70D7C6331E6427CD008B76C6 /* LazyScrollViewDemo.app */,
+				927CAE362046B37700BD3B19 /* LazyScrollViewDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		70D7C6351E6427CD008B76C6 /* LazyScrollViewDemo */ = {
+		927CAE382046B37700BD3B19 /* LazyScrollViewDemo */ = {
 			isa = PBXGroup;
 			children = (
-				70D7C6391E6427CD008B76C6 /* AppDelegate.h */,
-				70D7C63A1E6427CD008B76C6 /* AppDelegate.m */,
-				70D7C63C1E6427CD008B76C6 /* ViewController.h */,
-				70D7C63D1E6427CD008B76C6 /* ViewController.m */,
-				70D7C63F1E6427CD008B76C6 /* Main.storyboard */,
-				70D7C6421E6427CD008B76C6 /* Assets.xcassets */,
-				70D7C6441E6427CD008B76C6 /* LaunchScreen.storyboard */,
-				70D7C6471E6427CD008B76C6 /* Info.plist */,
-				70D7C6361E6427CD008B76C6 /* Supporting Files */,
+				927CAE392046B37700BD3B19 /* AppDelegate.h */,
+				927CAE3A2046B37700BD3B19 /* AppDelegate.m */,
+				92F01C4520493C36000983CA /* MainViewController.h */,
+				92F01C4620493C36000983CA /* MainViewController.m */,
+				927CAE3C2046B37700BD3B19 /* ReuseViewController.h */,
+				927CAE3D2046B37700BD3B19 /* ReuseViewController.m */,
+				92F01C4820493D9C000983CA /* OuterViewController.h */,
+				92F01C4920493D9C000983CA /* OuterViewController.m */,
+				929CC56820592B1400C2870B /* MoreViewController.h */,
+				929CC56920592B1400C2870B /* MoreViewController.m */,
+				9247FDBB205A9310004FB14E /* AsyncViewController.h */,
+				9247FDBC205A9310004FB14E /* AsyncViewController.m */,
+				927CAE422046B37700BD3B19 /* Assets.xcassets */,
+				927CAE442046B37700BD3B19 /* LaunchScreen.storyboard */,
+				927CAE472046B37700BD3B19 /* Info.plist */,
+				927CAE482046B37700BD3B19 /* main.m */,
 			);
 			path = LazyScrollViewDemo;
 			sourceTree = "<group>";
 		};
-		70D7C6361E6427CD008B76C6 /* Supporting Files */ = {
+		A9F9DA53D9F091F220CF1FF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				70D7C6371E6427CD008B76C6 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A48E16FBDA7CA19039D2164B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				ECD1FF81519CA31F379C5611 /* libPods-LazyScrollViewDemo.a */,
+				CA97F266258FD7B207134C76 /* libPods-LazyScrollViewDemo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -106,16 +115,16 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		70D7C6321E6427CD008B76C6 /* LazyScrollViewDemo */ = {
+		927CAE352046B37700BD3B19 /* LazyScrollViewDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 70D7C64A1E6427CD008B76C6 /* Build configuration list for PBXNativeTarget "LazyScrollViewDemo" */;
+			buildConfigurationList = 927CAE4C2046B37700BD3B19 /* Build configuration list for PBXNativeTarget "LazyScrollViewDemo" */;
 			buildPhases = (
-				598A8EE8D51846140BDD239E /* [CP] Check Pods Manifest.lock */,
-				70D7C62F1E6427CD008B76C6 /* Sources */,
-				70D7C6301E6427CD008B76C6 /* Frameworks */,
-				70D7C6311E6427CD008B76C6 /* Resources */,
-				3A6A0E9BEC57FAC92138C123 /* [CP] Embed Pods Frameworks */,
-				FBE925B995B81EED4A638B2E /* [CP] Copy Pods Resources */,
+				A810AF92003E824DBE229A21 /* [CP] Check Pods Manifest.lock */,
+				927CAE322046B37700BD3B19 /* Sources */,
+				927CAE332046B37700BD3B19 /* Frameworks */,
+				927CAE342046B37700BD3B19 /* Resources */,
+				2C0A0C8EE3C249225702BEF4 /* [CP] Embed Pods Frameworks */,
+				3B42DAA9E89AC5058947BA15 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -123,57 +132,56 @@
 			);
 			name = LazyScrollViewDemo;
 			productName = LazyScrollViewDemo;
-			productReference = 70D7C6331E6427CD008B76C6 /* LazyScrollViewDemo.app */;
+			productReference = 927CAE362046B37700BD3B19 /* LazyScrollViewDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		70D7C62B1E6427CD008B76C6 /* Project object */ = {
+		927CAE2E2046B37700BD3B19 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
-				ORGANIZATIONNAME = taobao;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = tmall;
 				TargetAttributes = {
-					70D7C6321E6427CD008B76C6 = {
-						CreatedOnToolsVersion = 8.2.1;
+					927CAE352046B37700BD3B19 = {
+						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 70D7C62E1E6427CD008B76C6 /* Build configuration list for PBXProject "LazyScrollViewDemo" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			buildConfigurationList = 927CAE312046B37700BD3B19 /* Build configuration list for PBXProject "LazyScrollViewDemo" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 70D7C62A1E6427CD008B76C6;
-			productRefGroup = 70D7C6341E6427CD008B76C6 /* Products */;
+			mainGroup = 927CAE2D2046B37700BD3B19;
+			productRefGroup = 927CAE372046B37700BD3B19 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				70D7C6321E6427CD008B76C6 /* LazyScrollViewDemo */,
+				927CAE352046B37700BD3B19 /* LazyScrollViewDemo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		70D7C6311E6427CD008B76C6 /* Resources */ = {
+		927CAE342046B37700BD3B19 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70D7C6461E6427CD008B76C6 /* LaunchScreen.storyboard in Resources */,
-				70D7C6431E6427CD008B76C6 /* Assets.xcassets in Resources */,
-				70D7C6411E6427CD008B76C6 /* Main.storyboard in Resources */,
+				927CAE462046B37700BD3B19 /* LaunchScreen.storyboard in Resources */,
+				927CAE432046B37700BD3B19 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3A6A0E9BEC57FAC92138C123 /* [CP] Embed Pods Frameworks */ = {
+		2C0A0C8EE3C249225702BEF4 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -185,10 +193,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		598A8EE8D51846140BDD239E /* [CP] Check Pods Manifest.lock */ = {
+		3B42DAA9E89AC5058947BA15 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A810AF92003E824DBE229A21 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -206,49 +229,30 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FBE925B995B81EED4A638B2E /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LazyScrollViewDemo/Pods-LazyScrollViewDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		70D7C62F1E6427CD008B76C6 /* Sources */ = {
+		927CAE322046B37700BD3B19 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70D7C63E1E6427CD008B76C6 /* ViewController.m in Sources */,
-				70D7C63B1E6427CD008B76C6 /* AppDelegate.m in Sources */,
-				70D7C6381E6427CD008B76C6 /* main.m in Sources */,
+				927CAE3E2046B37700BD3B19 /* ReuseViewController.m in Sources */,
+				929CC56A20592B1400C2870B /* MoreViewController.m in Sources */,
+				927CAE492046B37700BD3B19 /* main.m in Sources */,
+				92F01C4A20493D9C000983CA /* OuterViewController.m in Sources */,
+				927CAE3B2046B37700BD3B19 /* AppDelegate.m in Sources */,
+				92F01C4720493C36000983CA /* MainViewController.m in Sources */,
+				9247FDBD205A9311004FB14E /* AsyncViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		70D7C63F1E6427CD008B76C6 /* Main.storyboard */ = {
+		927CAE442046B37700BD3B19 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				70D7C6401E6427CD008B76C6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		70D7C6441E6427CD008B76C6 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				70D7C6451E6427CD008B76C6 /* Base */,
+				927CAE452046B37700BD3B19 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -256,12 +260,13 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		70D7C6481E6427CD008B76C6 /* Debug */ = {
+		927CAE4A2046B37700BD3B19 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -281,14 +286,15 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -309,12 +315,13 @@
 			};
 			name = Debug;
 		};
-		70D7C6491E6427CD008B76C6 /* Release */ = {
+		927CAE4B2046B37700BD3B19 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -334,14 +341,15 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -356,56 +364,56 @@
 			};
 			name = Release;
 		};
-		70D7C64B1E6427CD008B76C6 /* Debug */ = {
+		927CAE4D2046B37700BD3B19 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A5C4C9124EC9215291495727 /* Pods-LazyScrollViewDemo.debug.xcconfig */;
+			baseConfigurationReference = 80196663B6BB20F868052CE9 /* Pods-LazyScrollViewDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = LazyScrollViewDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tmall.LazyScrollViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
-		70D7C64C1E6427CD008B76C6 /* Release */ = {
+		927CAE4E2046B37700BD3B19 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8584A0928BAA1136A3EA481D /* Pods-LazyScrollViewDemo.release.xcconfig */;
+			baseConfigurationReference = AA72B4C430D44D71DA7D6BD2 /* Pods-LazyScrollViewDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = LazyScrollViewDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tmall.LazyScrollViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		70D7C62E1E6427CD008B76C6 /* Build configuration list for PBXProject "LazyScrollViewDemo" */ = {
+		927CAE312046B37700BD3B19 /* Build configuration list for PBXProject "LazyScrollViewDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				70D7C6481E6427CD008B76C6 /* Debug */,
-				70D7C6491E6427CD008B76C6 /* Release */,
+				927CAE4A2046B37700BD3B19 /* Debug */,
+				927CAE4B2046B37700BD3B19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		70D7C64A1E6427CD008B76C6 /* Build configuration list for PBXNativeTarget "LazyScrollViewDemo" */ = {
+		927CAE4C2046B37700BD3B19 /* Build configuration list for PBXNativeTarget "LazyScrollViewDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				70D7C64B1E6427CD008B76C6 /* Debug */,
-				70D7C64C1E6427CD008B76C6 /* Release */,
+				927CAE4D2046B37700BD3B19 /* Debug */,
+				927CAE4E2046B37700BD3B19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 70D7C62B1E6427CD008B76C6 /* Project object */;
+	rootObject = 927CAE2E2046B37700BD3B19 /* Project object */;
 }

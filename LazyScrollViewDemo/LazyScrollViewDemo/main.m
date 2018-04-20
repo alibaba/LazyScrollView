@@ -2,8 +2,7 @@
 //  main.m
 //  LazyScrollViewDemo
 //
-//  Created by xiaoxia on 2017/2/27.
-//  Copyright © 2017年 taobao. All rights reserved.
+//  Copyright (c) 2015-2018 Alibaba. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
