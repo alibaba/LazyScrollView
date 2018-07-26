@@ -67,9 +67,3 @@ Finally, do reload:
 ```
 
 For more details, please clone the repo and open the demo project. 
-
-# 微信群
-
-![](https://img.alicdn.com/tfs/TB11_2_kbSYBuNjSspiXXXNzpXa-167-167.png)
-
-搜索 `tangram_` 或者扫描以上二维码添加 Tangram 为好友，以便我们邀请你入群。
